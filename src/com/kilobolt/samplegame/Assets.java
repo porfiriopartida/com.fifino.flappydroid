@@ -10,4 +10,5 @@ public class Assets {
     public static Image tileWater;
     public static Image character;
     public static Sound click;
+    public static Image bluePipe;
 }

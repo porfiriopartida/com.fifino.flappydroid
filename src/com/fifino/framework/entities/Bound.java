@@ -1,16 +1,16 @@
 package com.fifino.framework.entities;
 
 import java.util.List;
-
+import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Point;
-
 import com.kilobolt.framework.Graphics;
 
 public class Bound {
     private int x;
     private int y;
     private List<Rectangle> rectangles;
+    private int debugColor = 0;
 
     public int getX() {
         return x;
@@ -73,11 +73,17 @@ public class Bound {
         }
         return false;
     }
-
+    public int getColor(){
+        if(this.debugColor == 0){
+            Random rnd = new Random();
+            this.debugColor = Color.rgb(rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
+        }
+        return this.debugColor;
+    }
     public void draw(Graphics g) {
         for (Rectangle r : rectangles) {
             g.drawRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
-                    r.getHeight(), Color.RED);
+                    r.getHeight(), getColor());
         }
     }
 }

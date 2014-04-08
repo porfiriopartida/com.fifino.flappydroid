@@ -2,7 +2,6 @@ package com.kilobolt.framework.implementation;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -12,7 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
-
+import com.fifino.framework.BitmapTransform;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
@@ -89,6 +88,12 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawRect(int x, int y, int width, int height, int color) {
         paint.setColor(color);
+        paint.setStyle(Style.STROKE);
+        canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
+    }
+    @Override
+    public void fillRect(int x, int y, int width, int height, int color) {
+        paint.setColor(color);
         paint.setStyle(Style.FILL);
         canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
     }
@@ -123,6 +128,11 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawImage(Image Image, int x, int y) {
         canvas.drawBitmap(((AndroidImage) Image).bitmap, x, y, null);
+    }
+    @Override
+    public void drawImage(Image Image, int x, int y, int angle) {
+        Bitmap bitmap = BitmapTransform.rotate(((AndroidImage) Image).bitmap, angle);
+        canvas.drawBitmap(bitmap, x, y, null);
     }
 
     public void drawScaledImage(Image Image, int x, int y, int width,

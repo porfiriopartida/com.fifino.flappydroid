@@ -1,21 +1,26 @@
 package com.kilobolt.samplegame;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import com.fifino.framework.Entity;
 import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
-import com.kilobolt.samplegame.entities.Floor;
+//import com.kilobolt.samplegame.entities.Floor;
 import com.kilobolt.samplegame.entities.GameCharacter;
+import com.kilobolt.samplegame.entities.Pipe;
 
-public class GameScreen extends Screen {
+public class GameScreen extends Screen implements Observer {
+
     enum GameState {
         Ready, Running, Paused, GameOver
     }
@@ -27,17 +32,16 @@ public class GameScreen extends Screen {
     // You would create game objects here.
 
     int livesLeft = 3;
+    int score = 0;
     Paint paint;
-
-    ArrayList<Entity> entities;
+    Vector<Entity> entities;
+    Pipe[] pipes;
     GameCharacter character;
-
-    private Floor floor;
+//    private Floor floor;
+    Random rnd;
 
     public GameScreen(Game game) {
         super(game);
-
-        initializeAssets();
 
         // Defining a paint object
         paint = new Paint();
@@ -46,8 +50,10 @@ public class GameScreen extends Screen {
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
 
+        rnd = new Random();
+
         // Setup entities
-        entities = new ArrayList<Entity>();
+        entities = new Vector<Entity>();
         initializeAssets();
         setupEntities();
     }
@@ -56,10 +62,12 @@ public class GameScreen extends Screen {
         Graphics graphics = game.getGraphics();
         Assets.background = graphics.newImage("bg-vertical.png",
                 ImageFormat.RGB565);
-        Assets.tileWater = graphics.newImage("tile-water.png",
-                ImageFormat.RGB565);
-        Assets.tileDirt = graphics
-                .newImage("tile-dirt.png", ImageFormat.RGB565);
+        Assets.bluePipe = graphics
+                .newImage("blue-pipe.png", ImageFormat.RGB565);
+//        Assets.tileWater = graphics.newImage("tile-water.png",
+//                ImageFormat.RGB565);
+//        Assets.tileDirt = graphics
+//                .newImage("tile-dirt.png", ImageFormat.RGB565);
         Assets.character = graphics.newImage("character.png",
                 ImageFormat.RGB565);
         Assets.click = game.getAudio().createSound("explode.ogg");
@@ -67,18 +75,34 @@ public class GameScreen extends Screen {
 
     @Override
     protected void setupEntities() {
-        setupFloor();
+//        setupFloor();
         setupCharacter();
+        setupPipes();
     }
 
-    private void setupFloor() {
-        floor = new Floor();
-        entities.add(floor);
+    private void setupPipes() {
+        pipes = new Pipe[2];
+        for (int i = 0; i < pipes.length; i++) {
+//            boolean upsideDown = i%2 == 0;
+            Pipe pipe = new Pipe(true);
+            entities.add(pipe);
+            pipe.setVisible(false);
+            pipe.setX(i*130*4 + 1200);
+//            pipe.setCharacter(character);
+            pipe.addObserver(this);
+            pipes[i] = pipe;
+        }
     }
+
+//    private void setupFloor() {
+//        floor = new Floor();
+//        entities.add(floor);
+//    }
 
     private void setupCharacter() {
         character = new GameCharacter();
         entities.add(character);
+        character.addObserver(this);
     }
 
     @Override
@@ -114,25 +138,15 @@ public class GameScreen extends Screen {
     }
 
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
-        // This is identical to the update() method from our Unit 2/3 game.
-
         // 1. All touch input is handled here:
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
 
             if (event.type == TouchEvent.TOUCH_DOWN) {
-//                Assets.click.play();
                 character.jump();
-//                character.setMoving(true);
-//                character.setDestinationX(event.x);
-            } else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-                character.setDestinationX(event.x);
-            } else if (event.type == TouchEvent.TOUCH_UP) {
-//                character.setMoving(false);
             }
         }
-
         // 2. Check miscellaneous events like death:
         if (livesLeft == 0) {
             state = GameState.GameOver;
@@ -141,26 +155,32 @@ public class GameScreen extends Screen {
         // 3. Call individual update() methods here.
         // This is where all the game updates happen.
         // For example, robot.update();
-        updateCharacter();
+        updateEntities();
         checkCollisions();
     }
 
-    private void updateCharacter() {
-        Graphics g = game.getGraphics();
-        character.update();
-        if (character.getBound().getY() > g.getHeight()) {
-            // out of bounds
-            character.setCharacterY(0);
-            livesLeft--;
+    private void updateEntities() {
+        Vector<Entity> entities = (Vector<Entity>) this.entities.clone();
+        for (Entity entity : entities) {
+            entity.update();
         }
     }
 
+    private void hitSomething() {
+        character.setCharacterY(0);
+        livesLeft--;
+    }
+
     private void checkCollisions() {
-        if (character.collides(floor)) {
-            character
-                    .setCharacterY(floor.getBound().getY() - floor.getHeight());
-        } else {
-            character.fall();
+//        if (character.collides(floor)) {
+//            hitSomething();
+//            return;
+//        }
+        for(Pipe pipe : pipes){
+            if(character.collides(pipe)){
+                hitSomething();
+                return;   
+            }
         }
     }
 
@@ -235,9 +255,18 @@ public class GameScreen extends Screen {
 
     private void drawRunningUI() {
         Graphics g = game.getGraphics();
+        Vector<Entity> entities = (Vector<Entity>) this.entities.clone();
         for (Entity entity : entities) {
             entity.draw(g);
         }
+
+        // Defining a paint object
+        Paint paint = new Paint();
+        paint.setTextSize(40);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLACK);
+        g.drawString("Score: " + score, 10, 100, paint);
     }
 
     private void drawPausedUI() {
@@ -249,9 +278,8 @@ public class GameScreen extends Screen {
 
     private void drawGameOverUI() {
         Graphics g = game.getGraphics();
-        g.drawRect(0, 0, 1281, 801, Color.BLACK);
-        g.drawString("GAME OVER.", 640, 300, paint);
-
+        g.fillRect(0, 0, 801, 1201, Color.BLACK);
+        g.drawString("GAME OVER.", 350, 300, paint);
     }
 
     @Override
@@ -274,6 +302,20 @@ public class GameScreen extends Screen {
     @Override
     public void backButton() {
         pause();
+    }
+
+    @Override
+    public void update(Observable observable, Object arg) {
+        System.out.println(observable.getClass().toString());
+        if (observable instanceof Pipe) {
+//            Pipe pipe = (Pipe) observable;
+//            pipe.deleteObservers();
+//            this.entities.remove(pipe);
+            score++;
+        } else if (observable instanceof GameCharacter) {
+            // user hit something
+            livesLeft--;
+        }
     }
 
 }

@@ -14,6 +14,8 @@ public interface Graphics {
     public void drawLine(int x, int y, int x2, int y2, int color);
 
     public void drawRect(int x, int y, int width, int height, int color);
+    
+    public void fillRect(int x, int y, int width, int height, int color);
 
     public void drawImage(Image image, int x, int y, int srcX, int srcY,
             int srcWidth, int srcHeight);
@@ -27,5 +29,8 @@ public interface Graphics {
     public int getHeight();
 
     public void drawARGB(int i, int j, int k, int l);
+
+    void drawImage(Image Image, int x, int y, int angle);
+
 
 }

@@ -15,7 +15,6 @@ import com.kilobolt.samplegame.entities.MenuItem;
 
 public class MainMenuScreen extends Screen {
     private MenuItem startMenuItem;
-
     public MainMenuScreen(Game game) {
         super(game);
         initializeAssets();
@@ -30,13 +29,6 @@ public class MainMenuScreen extends Screen {
     @Override
     public void update(float deltaTime) {
 
-        // Defining a paint object
-        Paint paint = new Paint();
-        paint.setTextSize(30);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
-
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
@@ -49,23 +41,12 @@ public class MainMenuScreen extends Screen {
             }
         }
     }
-
-    // private boolean inBounds(TouchEvent event, int x, int y, int width,
-    // int height) {
-    // if (event.x > x && event.x < x + width - 1 && event.y > y
-    // && event.y < y + height - 1) {
-    // return true;
-    // } else {
-    // return false;
-    // }
-    // }
-
+    
     @Override
     public void paint(float deltaTime) {
         Graphics g = game.getGraphics();
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), Color.WHITE);
+        g.fillRect(0, 0, g.getWidth(), g.getHeight(), Color.WHITE);
         startMenuItem.draw(g);
-        // g.drawImage(Assets.menu_start, 0, 0);
     }
 
     @Override
