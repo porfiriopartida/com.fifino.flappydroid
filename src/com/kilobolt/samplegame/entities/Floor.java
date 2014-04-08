@@ -1,7 +1,6 @@
 package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
-
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
@@ -13,9 +12,10 @@ public class Floor extends AndroidEntity {
     private Image image;
     private int offsetX = 0;
     private int offsetY = 1240;
-    int tileWidth = 40;
-    int tileHeight = 40;
-
+    private int tileWidth = 40;
+    private int tileHeight = 40;
+    private int speedX = 10;
+    private int width = 0;
     public Floor() {
         this.image = Assets.tileDirt;
         ArrayList<Image> list = new ArrayList<Image>();
@@ -36,8 +36,9 @@ public class Floor extends AndroidEntity {
         rectangles.add(rectangleB);
 
         b.setRectangles(rectangles).setX(offsetX).setY(offsetY);
-
+        this.width = 5*tileWidth + 80 + 10 * tileWidth;
         this.setBound(b);
+        setVisible(true);
     }
 
     @Override
@@ -47,6 +48,8 @@ public class Floor extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
+
+        if(isVisible()){
         int tileOffsetX = offsetX;
         int tileOffsetY = offsetY;
         for (int i = 0; i < 5; i++) {
@@ -62,9 +65,22 @@ public class Floor extends AndroidEntity {
         if (AndroidEntity.DEBUG_MODE) {
             getBound().draw(g);
         }
+        }
     }
 
     public int getHeight() {
         return tileHeight;
+    }
+
+    public void update() {
+        slide();
+    }
+
+    private void slide() {
+        this.offsetX -= this.speedX;
+        if(this.offsetX + this.width <= 0){
+            this.offsetX = 800;
+        }
+        this.getBound().setX(offsetX);
     }
 }

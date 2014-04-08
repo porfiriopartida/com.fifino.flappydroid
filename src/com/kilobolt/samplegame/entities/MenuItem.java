@@ -15,6 +15,8 @@ public class MenuItem extends AndroidEntity {
 
     public MenuItem(Image image) {
         this.image = image;
+        offsetX = 800/2 - image.getWidth()/2;
+        offsetY = 1200/2 - image.getHeight()/2;
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -43,6 +45,10 @@ public class MenuItem extends AndroidEntity {
     @Override
     public void draw(Graphics g) {
         g.drawImage(this.image, offsetX, offsetY);
+    }
+
+    @Override
+    public void update() {
     }
 
 }

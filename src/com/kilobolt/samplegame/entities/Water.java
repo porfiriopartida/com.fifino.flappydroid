@@ -38,6 +38,7 @@ public class Water extends AndroidEntity {
         b.setRectangles(rectangles).setX(offsetX).setY(offsetY);
 
         this.setBound(b);
+        setVisible(true);
     }
 
     @Override
@@ -66,5 +67,11 @@ public class Water extends AndroidEntity {
 
     public int getHeight() {
         return tileHeight;
+    }
+
+    @Override
+    public void update() {
+        // TODO Auto-generated method stub
+        
     }
 }

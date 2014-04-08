@@ -2,7 +2,6 @@ package com.kilobolt.samplegame.entities;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
@@ -15,12 +14,9 @@ import com.kilobolt.samplegame.Assets;
 public class GameCharacter extends AndroidEntity {
 
     private Image image;
-    private int speedX = 10;
     private int speedY = -20;
     private int characterX = 201;
     private int characterY = 202;
-    private boolean isMoving;
-    private int destinationX;
     private double lastTime = Time.getCurrentTime();
 
     public GameCharacter() {
@@ -32,7 +28,7 @@ public class GameCharacter extends AndroidEntity {
 
         Bound b = new Bound();
         Rectangle rectangle = new Rectangle();
-        rectangle.setX(0).setY(45).setHeight(2).setWidth(47);
+        rectangle.setX(0).setY(0).setHeight(46).setWidth(42);
 
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         rectangles.add(rectangle);
@@ -40,6 +36,7 @@ public class GameCharacter extends AndroidEntity {
         b.setRectangles(rectangles).setX(characterX).setY(characterY);
 
         this.setBound(b);
+        setVisible(true);
     }
 
     @Override
@@ -56,34 +53,9 @@ public class GameCharacter extends AndroidEntity {
         }
     }
 
-    private int getStep() {
-        int step = 0;
-        if (this.destinationX < characterX) {
-            // left
-            step = -speedX;
-        } else {
-            // right
-            step = speedX;
-        }
-
-        return step;
-    }
-
-    public boolean isMoving() {
-        return isMoving;
-    }
 
     public void update() {
-        characterX += isMoving ? getStep() : 0;
-        this.getBound().setX(characterX).setY(characterY);
-    }
-
-    public void setMoving(boolean b) {
-        this.isMoving = b;
-    }
-
-    public void setDestinationX(int x) {
-        this.destinationX = x;
+        fall();
     }
 
     public void setCharacterY(int y) {
@@ -94,6 +66,11 @@ public class GameCharacter extends AndroidEntity {
         double now = Time.getCurrentTime();
         double time = now - lastTime;
         this.characterY += Mechanics.getSpeed(time, speedY);
+        this.getBound().setY(characterY);
+        
+        if (this.getBound().getY() > 1281) {
+            this.setCharacterY(0);
+        }
     }
 
     public void jump() {

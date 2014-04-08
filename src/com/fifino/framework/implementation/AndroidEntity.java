@@ -1,15 +1,24 @@
 package com.fifino.framework.implementation;
 
 import java.util.List;
-
+import java.util.Observable;
 import android.graphics.Point;
-
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Bound;
+import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
-public abstract class AndroidEntity implements Entity {
+public abstract class AndroidEntity extends Observable implements Entity {
     public final static boolean DEBUG_MODE = true;
+    private boolean isVisible;
+    
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
 
     private Bound bound;
     private List<Image> images;
@@ -52,5 +61,4 @@ public abstract class AndroidEntity implements Entity {
     public boolean collides(Point p) {
         return this.getBound().collides(p);
     }
-
 }

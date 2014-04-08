@@ -22,4 +22,6 @@ public interface Entity {
     public boolean isCollidable();
 
     public void draw(Graphics g);
+    
+    public void update();
 }
