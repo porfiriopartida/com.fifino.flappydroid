@@ -144,7 +144,7 @@ public class GameScreen extends Screen {
     private void updateCharacter(){
     	Graphics g = game.getGraphics();
         character.update();
-        if(character.getBound().getX() > g.getHeight() ){
+        if(character.getBound().getY() > g.getHeight() ){
         	//out of bounds
         	character.setCharacterY(0);
         }

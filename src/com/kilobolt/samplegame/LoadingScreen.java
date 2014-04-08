@@ -1,9 +1,7 @@
 package com.kilobolt.samplegame;
 
 import com.kilobolt.framework.Game;
-import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Screen;
-import com.kilobolt.framework.Graphics.ImageFormat;
 
 public class LoadingScreen extends Screen {
 	public LoadingScreen(Game game) {

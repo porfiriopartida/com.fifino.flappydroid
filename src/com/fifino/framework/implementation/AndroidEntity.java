@@ -10,7 +10,7 @@ import com.fifino.framework.entities.Bound;
 import com.kilobolt.framework.Image;
 
 public abstract class AndroidEntity implements Entity {
-	public final static boolean DEBUG_MODE = false;
+	public final static boolean DEBUG_MODE = true;
 	
 	private Bound bound;
 	private List<Image> images;

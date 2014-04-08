@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Input.TouchEvent;
 
 public class Bound {
 	private int x;
