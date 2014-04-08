@@ -1,6 +1,5 @@
 package com.kilobolt.framework;
 
-
 import android.graphics.Paint;
 
 public interface Graphics {

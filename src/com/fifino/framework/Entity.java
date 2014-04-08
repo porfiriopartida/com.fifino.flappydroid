@@ -7,19 +7,19 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
 public interface Entity {
-	public void setBound(Bound bound);
+    public void setBound(Bound bound);
 
-	public Bound getBound();
+    public Bound getBound();
 
-	public void setImages(List<Image> images);
+    public void setImages(List<Image> images);
 
-	public List<Image> getImages();
-	
-	public void addImage(Image image);
+    public List<Image> getImages();
 
-	public boolean collides(Entity e);
+    public void addImage(Image image);
 
-	public boolean isCollidable();
-	
-	public void draw(Graphics g);
+    public boolean collides(Entity e);
+
+    public boolean isCollidable();
+
+    public void draw(Graphics g);
 }

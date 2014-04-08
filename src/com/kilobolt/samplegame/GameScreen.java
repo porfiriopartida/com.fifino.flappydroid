@@ -20,7 +20,7 @@ public class GameScreen extends Screen {
         Ready, Running, Paused, GameOver
     }
 
-//    GameState state = GameState.Ready;
+    // GameState state = GameState.Ready;
     GameState state = GameState.Running;
 
     // Variable Setup
@@ -29,14 +29,14 @@ public class GameScreen extends Screen {
     int livesLeft = 1;
     Paint paint;
 
-	ArrayList<Entity> entities;
-	GameCharacter character;
+    ArrayList<Entity> entities;
+    GameCharacter character;
 
-	private Floor floor;
-	
+    private Floor floor;
+
     public GameScreen(Game game) {
         super(game);
-		
+
         initializeAssets();
 
         // Defining a paint object
@@ -45,8 +45,8 @@ public class GameScreen extends Screen {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-        
-        //Setup entities
+
+        // Setup entities
         entities = new ArrayList<Entity>();
         initializeAssets();
         setupEntities();
@@ -54,29 +54,34 @@ public class GameScreen extends Screen {
 
     protected void initializeAssets() {
         Graphics graphics = game.getGraphics();
-		Assets.background = graphics.newImage("bg-vertical.png", ImageFormat.RGB565);
-		Assets.tileWater = graphics.newImage("tile-water.png", ImageFormat.RGB565);
-		Assets.tileDirt = graphics.newImage("tile-dirt.png", ImageFormat.RGB565);
-		Assets.character = graphics.newImage("character.png", ImageFormat.RGB565);
-		Assets.click = game.getAudio().createSound("explode.ogg");
-	}
-	@Override
-	protected void setupEntities() {
-		setupFloor();
-		setupCharacter();
-	}
+        Assets.background = graphics.newImage("bg-vertical.png",
+                ImageFormat.RGB565);
+        Assets.tileWater = graphics.newImage("tile-water.png",
+                ImageFormat.RGB565);
+        Assets.tileDirt = graphics
+                .newImage("tile-dirt.png", ImageFormat.RGB565);
+        Assets.character = graphics.newImage("character.png",
+                ImageFormat.RGB565);
+        Assets.click = game.getAudio().createSound("explode.ogg");
+    }
 
-	private void setupFloor() {
-    	floor = new Floor(Assets.tileDirt);
-    	entities.add(floor);
-	}
+    @Override
+    protected void setupEntities() {
+        setupFloor();
+        setupCharacter();
+    }
+
+    private void setupFloor() {
+        floor = new Floor();
+        entities.add(floor);
+    }
 
     private void setupCharacter() {
-    	character = new GameCharacter(Assets.character);
-    	entities.add(character);
-	}
+        character = new GameCharacter();
+        entities.add(character);
+    }
 
-	@Override
+    @Override
     public void update(float deltaTime) {
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
@@ -96,68 +101,68 @@ public class GameScreen extends Screen {
     }
 
     private void updateReady(List<TouchEvent> touchEvents) {
-        
+
         // This example starts with a "Ready" screen.
-        // When the user touches the screen, the game begins. 
+        // When the user touches the screen, the game begins.
         // state now becomes GameState.Running.
         // Now the updateRunning() method will be called!
-        
-        if (touchEvents.size() > 0){
-        	Assets.click.play();
+
+        if (touchEvents.size() > 0) {
+            Assets.click.play();
             state = GameState.Running;
         }
     }
 
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
-        //This is identical to the update() method from our Unit 2/3 game.
-        
+        // This is identical to the update() method from our Unit 2/3 game.
+
         // 1. All touch input is handled here:
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
 
             if (event.type == TouchEvent.TOUCH_DOWN) {
-            	Assets.click.play();
-            	character.setMoving(true);
-            	character.setDestinationX(event.x);
-            }
-            else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-            	character.setDestinationX(event.x);
-            } 
-            else if (event.type == TouchEvent.TOUCH_UP) {
-            	character.setMoving(false);
+                Assets.click.play();
+                character.setMoving(true);
+                character.setDestinationX(event.x);
+            } else if (event.type == TouchEvent.TOUCH_DRAGGED) {
+                character.setDestinationX(event.x);
+            } else if (event.type == TouchEvent.TOUCH_UP) {
+                character.setMoving(false);
             }
         }
-        
+
         // 2. Check miscellaneous events like death:
         if (livesLeft == 0) {
             state = GameState.GameOver;
         }
-        
-        
+
         // 3. Call individual update() methods here.
         // This is where all the game updates happen.
         // For example, robot.update();
         updateCharacter();
         checkCollisions();
     }
-    private void updateCharacter(){
-    	Graphics g = game.getGraphics();
+
+    private void updateCharacter() {
+        Graphics g = game.getGraphics();
         character.update();
-        if(character.getBound().getY() > g.getHeight() ){
-        	//out of bounds
-        	character.setCharacterY(0);
+        if (character.getBound().getY() > g.getHeight()) {
+            // out of bounds
+            character.setCharacterY(0);
         }
     }
-    private void checkCollisions() {
-		if(character.collides(floor)){
-			character.setCharacterY(floor.getBound().getY() - floor.getHeight());
-		}else{
-			character.fall();
-		}
-	}
 
-	private void updatePaused(List<TouchEvent> touchEvents) {
+    private void checkCollisions() {
+        if (character.collides(floor)) {
+            character
+                    .setCharacterY(floor.getBound().getY() - floor.getHeight());
+        } else {
+            character.fall();
+        }
+    }
+
+    private void updatePaused(List<TouchEvent> touchEvents) {
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
@@ -193,18 +198,18 @@ public class GameScreen extends Screen {
         // g.drawImage(Assets.character, characterX, characterY);
 
         // Secondly, draw the UI above the game elements.
-		if (state == GameState.Ready) {
-			drawReadyUI();
-		}
-		if (state == GameState.Running) {
-			drawRunningUI();
-		}
-		if (state == GameState.Paused) {
-			drawPausedUI();
-		}
-		if (state == GameState.GameOver) {
-			drawGameOverUI();
-		}
+        if (state == GameState.Ready) {
+            drawReadyUI();
+        }
+        if (state == GameState.Running) {
+            drawRunningUI();
+        }
+        if (state == GameState.Paused) {
+            drawPausedUI();
+        }
+        if (state == GameState.GameOver) {
+            drawGameOverUI();
+        }
 
     }
 
@@ -228,8 +233,8 @@ public class GameScreen extends Screen {
 
     private void drawRunningUI() {
         Graphics g = game.getGraphics();
-        for(Entity entity : entities){
-        	entity.draw(g);
+        for (Entity entity : entities) {
+            entity.draw(g);
         }
     }
 
@@ -249,7 +254,7 @@ public class GameScreen extends Screen {
 
     @Override
     public void pause() {
-        if (state == GameState.Running){
+        if (state == GameState.Running) {
             state = GameState.Paused;
         }
     }

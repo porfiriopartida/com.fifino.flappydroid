@@ -9,15 +9,15 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 import com.kilobolt.samplegame.Assets;
 
-public class Floor extends AndroidEntity {
+public class Water extends AndroidEntity {
     private Image image;
     private int offsetX = 0;
     private int offsetY = 1240;
     int tileWidth = 40;
     int tileHeight = 40;
 
-    public Floor() {
-        this.image = Assets.tileDirt;
+    public Water() {
+        this.image = Assets.tileWater;
         ArrayList<Image> list = new ArrayList<Image>();
         list.add(image);
         this.setImages(list);

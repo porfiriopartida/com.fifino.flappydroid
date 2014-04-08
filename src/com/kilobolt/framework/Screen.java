@@ -8,9 +8,9 @@ public abstract class Screen {
     }
 
     protected abstract void initializeAssets();
-    
+
     protected abstract void setupEntities();
-    
+
     public abstract void update(float deltaTime);
 
     public abstract void paint(float deltaTime);
@@ -20,7 +20,6 @@ public abstract class Screen {
     public abstract void resume();
 
     public abstract void dispose();
-    
+
     public abstract void backButton();
 }
- 

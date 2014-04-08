@@ -3,7 +3,7 @@ package com.kilobolt.framework;
 import java.util.List;
 
 public interface Input {
-    
+
     public static class TouchEvent {
         public static final int TOUCH_DOWN = 0;
         public static final int TOUCH_UP = 1;
@@ -13,7 +13,6 @@ public interface Input {
         public int type;
         public int x, y;
         public int pointer;
-
 
     }
 

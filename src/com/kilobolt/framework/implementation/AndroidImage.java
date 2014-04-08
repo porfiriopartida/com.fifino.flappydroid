@@ -6,31 +6,31 @@ import com.kilobolt.framework.Image;
 import com.kilobolt.framework.Graphics.ImageFormat;
 
 public class AndroidImage implements Image {
-	Bitmap bitmap;
-	ImageFormat format;
+    Bitmap bitmap;
+    ImageFormat format;
 
-	public AndroidImage(Bitmap bitmap, ImageFormat format) {
-		this.bitmap = bitmap; 
-		this.format = format;
-	}
+    public AndroidImage(Bitmap bitmap, ImageFormat format) {
+        this.bitmap = bitmap;
+        this.format = format;
+    }
 
-	@Override
-	public int getWidth() {
-		return bitmap.getWidth();
-	}
+    @Override
+    public int getWidth() {
+        return bitmap.getWidth();
+    }
 
-	@Override
-	public int getHeight() {
-		return bitmap.getHeight();
-	}
+    @Override
+    public int getHeight() {
+        return bitmap.getHeight();
+    }
 
-	@Override
-	public ImageFormat getFormat() {
-		return format;
-	}
+    @Override
+    public ImageFormat getFormat() {
+        return format;
+    }
 
-	@Override
-	public void dispose() {
-		bitmap.recycle();
-	}
+    @Override
+    public void dispose() {
+        bitmap.recycle();
+    }
 }
