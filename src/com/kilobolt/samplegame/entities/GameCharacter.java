@@ -1,21 +1,27 @@
 package com.kilobolt.samplegame.entities;
 
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
+import com.fifino.framework.physics.Mechanics;
+import com.fifino.framework.tools.Time;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 import com.kilobolt.samplegame.Assets;
 
 public class GameCharacter extends AndroidEntity {
+
     private Image image;
     private int speedX = 10;
-    private int characterX = 0;
+    private int speedY = -20;
+    private int characterX = 201;
     private int characterY = 202;
     private boolean isMoving;
     private int destinationX;
+    private double lastTime = Time.getCurrentTime();
 
     public GameCharacter() {
         this.image = Assets.character;
@@ -85,6 +91,12 @@ public class GameCharacter extends AndroidEntity {
     }
 
     public void fall() {
-        this.characterY += 10;
+        double now = Time.getCurrentTime();
+        double time = now - lastTime;
+        this.characterY += Mechanics.getSpeed(time, speedY);
+    }
+
+    public void jump() {
+        lastTime = Time.getCurrentTime();
     }
 }

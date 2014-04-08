@@ -1,21 +1,18 @@
 package com.kilobolt.samplegame;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import com.fifino.framework.Entity;
 import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
-import com.kilobolt.samplegame.entities.Floor;
-import com.kilobolt.samplegame.entities.GameCharacter;
 
-public class GameScreen extends Screen {
+public class MainGameSkeleton extends Screen {
+
     enum GameState {
         Ready, Running, Paused, GameOver
     }
@@ -25,27 +22,18 @@ public class GameScreen extends Screen {
 
     // Variable Setup
     // You would create game objects here.
-
-    int livesLeft = 3;
+    ArrayList<Entity> entities;
+    int livesLeft = 1;
     Paint paint;
 
-    ArrayList<Entity> entities;
-    GameCharacter character;
-
-    private Floor floor;
-
-    public GameScreen(Game game) {
+    public MainGameSkeleton(Game game) {
         super(game);
-
-        initializeAssets();
-
         // Defining a paint object
         paint = new Paint();
         paint.setTextSize(30);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-
         // Setup entities
         entities = new ArrayList<Entity>();
         initializeAssets();
@@ -53,32 +41,16 @@ public class GameScreen extends Screen {
     }
 
     protected void initializeAssets() {
-        Graphics graphics = game.getGraphics();
-        Assets.background = graphics.newImage("bg-vertical.png",
-                ImageFormat.RGB565);
-        Assets.tileWater = graphics.newImage("tile-water.png",
-                ImageFormat.RGB565);
-        Assets.tileDirt = graphics
-                .newImage("tile-dirt.png", ImageFormat.RGB565);
-        Assets.character = graphics.newImage("character.png",
-                ImageFormat.RGB565);
-        Assets.click = game.getAudio().createSound("explode.ogg");
+        // Graphics graphics = game.getGraphics();
+        // Assets.character = graphics.newImage("character.png",
+        // ImageFormat.RGB565);
+        // Assets.click = game.getAudio().createSound("explode.ogg");
     }
 
     @Override
     protected void setupEntities() {
-        setupFloor();
-        setupCharacter();
-    }
-
-    private void setupFloor() {
-        floor = new Floor();
-        entities.add(floor);
-    }
-
-    private void setupCharacter() {
-        character = new GameCharacter();
-        entities.add(character);
+        // character = new GameCharacter();
+        // entities.add(character);
     }
 
     @Override
@@ -101,7 +73,6 @@ public class GameScreen extends Screen {
     }
 
     private void updateReady(List<TouchEvent> touchEvents) {
-
         // This example starts with a "Ready" screen.
         // When the user touches the screen, the game begins.
         // state now becomes GameState.Running.
@@ -115,21 +86,18 @@ public class GameScreen extends Screen {
 
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
         // This is identical to the update() method from our Unit 2/3 game.
-
         // 1. All touch input is handled here:
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
 
             if (event.type == TouchEvent.TOUCH_DOWN) {
-//                Assets.click.play();
-                character.jump();
-//                character.setMoving(true);
-//                character.setDestinationX(event.x);
+                // On tap down
+                // Assets.click.play();
             } else if (event.type == TouchEvent.TOUCH_DRAGGED) {
-                character.setDestinationX(event.x);
+                // On Drag
             } else if (event.type == TouchEvent.TOUCH_UP) {
-//                character.setMoving(false);
+                // On tap up
             }
         }
 
@@ -146,22 +114,9 @@ public class GameScreen extends Screen {
     }
 
     private void updateCharacter() {
-        Graphics g = game.getGraphics();
-        character.update();
-        if (character.getBound().getY() > g.getHeight()) {
-            // out of bounds
-            character.setCharacterY(0);
-            livesLeft--;
-        }
     }
 
     private void checkCollisions() {
-        if (character.collides(floor)) {
-            character
-                    .setCharacterY(floor.getBound().getY() - floor.getHeight());
-        } else {
-            character.fall();
-        }
     }
 
     private void updatePaused(List<TouchEvent> touchEvents) {
@@ -169,7 +124,7 @@ public class GameScreen extends Screen {
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
-
+                resume();
             }
         }
     }
@@ -179,12 +134,7 @@ public class GameScreen extends Screen {
         for (int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
-                if (event.x > 300 && event.x < 980 && event.y > 100
-                        && event.y < 500) {
-                    nullify();
-                    game.setScreen(new MainMenuScreen(game));
-                    return;
-                }
+                game.setScreen(new MainMenuScreen(game));
             }
         }
 
@@ -229,7 +179,7 @@ public class GameScreen extends Screen {
         Graphics g = game.getGraphics();
 
         g.drawARGB(155, 0, 0, 0);
-        g.drawString("Tap again to start.", 0, 0, paint);
+        g.drawString("Ready.", 0, 0, paint);
 
     }
 
@@ -244,6 +194,7 @@ public class GameScreen extends Screen {
         Graphics g = game.getGraphics();
         // Darken the entire screen so you can display the Paused screen.
         g.drawARGB(155, 0, 0, 0);
+        g.drawString("Tap to resume.", 0, 0, paint);
 
     }
 
@@ -263,7 +214,7 @@ public class GameScreen extends Screen {
 
     @Override
     public void resume() {
-
+        state = GameState.Running;
     }
 
     @Override
