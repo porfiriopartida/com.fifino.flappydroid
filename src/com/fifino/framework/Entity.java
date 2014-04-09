@@ -23,5 +23,5 @@ public interface Entity {
 
     public void draw(Graphics g);
     
-    public void update();
+    public void update(float delta);
 }

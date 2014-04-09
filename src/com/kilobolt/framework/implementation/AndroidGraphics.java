@@ -134,7 +134,13 @@ public class AndroidGraphics implements Graphics {
         Bitmap bitmap = BitmapTransform.rotate(((AndroidImage) Image).bitmap, angle);
         canvas.drawBitmap(bitmap, x, y, null);
     }
-
+    @Override
+    public void drawImage(Image Image, int x, int y, int width, int height) {
+        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
+        canvas.drawBitmap(bitmap, x, y, null);
+    }
+    @Override
+    @Deprecated
     public void drawScaledImage(Image Image, int x, int y, int width,
             int height, int srcX, int srcY, int srcWidth, int srcHeight) {
 

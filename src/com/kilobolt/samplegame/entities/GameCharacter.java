@@ -14,7 +14,7 @@ import com.kilobolt.samplegame.Assets;
 public class GameCharacter extends AndroidEntity {
 
     private Image image;
-    private int speedY = -20;
+    private int speedY = 0;
     private int characterX = 201;
     private int characterY = 202;
     private double lastTime = Time.getCurrentTime();
@@ -46,26 +46,27 @@ public class GameCharacter extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(this.image, characterX, characterY);
+        g.drawImage(this.image, characterX, characterY, 100, 100);
+//        g.drawScaledImage(this.image, characterX, characterY, this.image.getWidth(), this.image.getHeight(), characterX, characterY, 200, 200);
 
         if (AndroidEntity.DEBUG_MODE) {
             getBound().draw(g);
         }
     }
 
-
-    public void update() {
-        fall();
+    @Override
+    public void update(float deltaTime) {
+        fall(deltaTime);
     }
 
     public void setCharacterY(int y) {
         this.characterY = y;
     }
 
-    public void fall() {
+    public void fall(float deltaTime) {
         double now = Time.getCurrentTime();
         double time = now - lastTime;
-        this.characterY += Mechanics.getSpeed(time, speedY);
+        this.characterY += Mechanics.getSpeed(time, speedY) * deltaTime;
         this.getBound().setY(characterY);
         
         if (this.getBound().getY() > 1281) {
@@ -74,6 +75,7 @@ public class GameCharacter extends AndroidEntity {
     }
 
     public void jump() {
+    	speedY = -20;
         lastTime = Time.getCurrentTime();
     }
 }

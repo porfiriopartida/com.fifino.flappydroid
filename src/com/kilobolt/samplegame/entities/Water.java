@@ -70,8 +70,7 @@ public class Water extends AndroidEntity {
     }
 
     @Override
-    public void update() {
-        // TODO Auto-generated method stub
+    public void update(float deltaTime) {
         
     }
 }

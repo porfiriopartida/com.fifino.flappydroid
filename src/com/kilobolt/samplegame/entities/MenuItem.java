@@ -48,7 +48,7 @@ public class MenuItem extends AndroidEntity {
     }
 
     @Override
-    public void update() {
+    public void update(float deltaTime) {
     }
 
 }

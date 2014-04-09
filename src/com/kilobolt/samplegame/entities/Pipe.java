@@ -13,12 +13,13 @@ import com.kilobolt.samplegame.Assets;
 public class Pipe extends AndroidEntity {
 
     private int offsetX = 800;
-    private int offsetY = 881;
+    private int offsetY = 590;
     AndroidImage image;
     boolean upsideDown;
-    private int speedX = 20;
+    private int speedX = 10;
     private int width;
     private int height;
+    public static final int SEPARATION = 601;
 
     // private GameCharacter character;
 
@@ -63,22 +64,22 @@ public class Pipe extends AndroidEntity {
             }
         }
     }
-
-    public void update() {
-        slide();
+    @Override
+    public void update(float deltaTime) {
+        slide(deltaTime);
         boolean outOfBoundsLeft = this.offsetX + this.width <= 0;
         boolean outOfBoundsRight = this.offsetX >= 800;
         boolean isVisible = !(outOfBoundsLeft || outOfBoundsRight);
         setVisible(isVisible);
         if(outOfBoundsLeft){
-            this.setX(1300);
+            this.setX(this.node.getX() + Pipe.SEPARATION);
             this.setChanged();
             this.notifyObservers();
         }
     }
 
-    private void slide() {
-        this.offsetX -= this.speedX;
+    private void slide(float deltaTime) {
+        this.offsetX -= this.speedX * deltaTime;
         this.getBound().setX(offsetX);
 //         if (this.offsetX + this.width <= 0 || this.offsetX >= 800) {
         // out of bounds
@@ -86,10 +87,20 @@ public class Pipe extends AndroidEntity {
         // }
     }
 
-    public void setX(int x) {
+    public Pipe setX(int x) {
         this.offsetX = x;
         this.getBound().setX(offsetX);
+        return this;
     }
+
+	public int getX() {
+		return offsetX;
+	}
+	Pipe node;
+	public Pipe setPipe(Pipe pipe) {
+		this.node = pipe;
+        return this;
+	}
 
     // public void setCharacter(GameCharacter character) {
     // this.character = character;

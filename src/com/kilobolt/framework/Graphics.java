@@ -32,5 +32,10 @@ public interface Graphics {
 
     void drawImage(Image Image, int x, int y, int angle);
 
+	void drawScaledImage(Image Image, int x, int y, int width, int height,
+			int srcX, int srcY, int srcWidth, int srcHeight);
+
+	void drawImage(Image Image, int x, int y, int width, int height);
+
 
 }

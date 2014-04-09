@@ -3,7 +3,6 @@ package com.kilobolt.samplegame;
 import java.util.List;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 
 import com.kilobolt.framework.Game;

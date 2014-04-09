@@ -5,11 +5,10 @@ import java.util.Observable;
 import android.graphics.Point;
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Bound;
-import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
 public abstract class AndroidEntity extends Observable implements Entity {
-    public final static boolean DEBUG_MODE = true;
+    public final static boolean DEBUG_MODE = false;
     private boolean isVisible;
     
     public boolean isVisible() {

@@ -165,15 +165,15 @@ public class MainGameSkeleton extends Screen {
 
     }
 
-    private void nullify() {
-
-        // Set all variables to null. You will be recreating them in the
-        // constructor.
-        paint = null;
-
-        // Call garbage collector to clean up memory.
-        System.gc();
-    }
+//    private void nullify() {
+//
+//        // Set all variables to null. You will be recreating them in the
+//        // constructor.
+//        paint = null;
+//
+//        // Call garbage collector to clean up memory.
+//        System.gc();
+//    }
 
     private void drawReadyUI() {
         Graphics g = game.getGraphics();
