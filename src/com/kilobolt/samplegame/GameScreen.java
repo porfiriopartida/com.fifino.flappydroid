@@ -6,11 +6,18 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
+
+
+
+
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.fifino.framework.Entity;
+import com.fifino.framework.entities.Rectangle;
+import com.fifino.framework.entities.Rectangle.CollisionSpot;
+import com.fifino.framework.implementation.AndroidEntity;
 import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
@@ -30,19 +37,15 @@ public class GameScreen extends Screen implements Observer {
 	public static int HIGH_SCORE = 0;
 	// GameState state = GameState.Ready;
 	GameState state = GameState.Running;
-
 	// Variable Setup
 	// You would create game objects here.
-
+	Random rnd;
 	int livesLeft = 1;
 	int score = 0;
 	Paint paint;
 	ArrayList<Entity> entities;
 	// Pipe[] pipes;
 	GameCharacter character;
-	// private Floor floor;
-	Random rnd;
-
 	private Floor floor;
 
 	public GameScreen(Game game) {
@@ -61,21 +64,30 @@ public class GameScreen extends Screen implements Observer {
 		entities = new ArrayList<Entity>();
 		initializeAssets();
 		setupEntities();
+		
+		AndroidEntity.debugMode = AndroidEntity.DebugMode.OFF;
 	}
 
 	protected void initializeAssets() {
-		Graphics graphics = game.getGraphics();
-		Assets.background = graphics.newImage("bg-vertical.png",
-				ImageFormat.RGB565);
-		Assets.bluePipe = graphics
-				.newImage("blue-pipe.png", ImageFormat.RGB565);
-		Assets.tileWater = graphics.newImage("tile-water.png",
-				ImageFormat.RGB565);
-		Assets.tileDirt = graphics
-				.newImage("tile-dirt.png", ImageFormat.RGB565);
-		Assets.character = graphics.newImage("character.png",
-				ImageFormat.RGB565);
-		Assets.click = game.getAudio().createSound("explode.ogg");
+		if(Assets.background == null){
+			Graphics graphics = game.getGraphics();
+			Assets.background = graphics.newImage("bg-vertical.png",
+					ImageFormat.RGB565);
+			
+			Assets.bluePipe = graphics
+					.newImage("blue-pipe.png", ImageFormat.RGB565);
+			
+			Assets.tileDirt = graphics
+					.newImage("tile-dirt.png", ImageFormat.RGB565);
+			
+			Assets.character = graphics.newImage("character.png",
+					ImageFormat.RGB565);
+	
+			Assets.gameOver = graphics.newImage("game-over.png",
+					ImageFormat.RGB565);
+	
+			Assets.click = game.getAudio().createSound("explode.ogg");
+		}
 	}
 
 	@Override
@@ -179,30 +191,81 @@ public class GameScreen extends Screen implements Observer {
 		}
 	}
 
-	private void hitSomething() {
-//		character.setCharacterY(0);
+	protected void collisionDetected(AndroidEntity entity, Rectangle[] collisionRectangles) {
+		livesLeft--;
+		if(collisionRectangles == null || collisionRectangles.length <= 1 || collisionRectangles.length > 2){
+			return;
+		}
+		CollisionSpot collisionSpot = Rectangle.getCollisionSpot(collisionRectangles[0], collisionRectangles[1]);
+		System.out.println(collisionSpot);
+		switch (collisionSpot) {
+			case LEFT:
+				character.setX(entity.getX() - character.getWidth());
+				break;
+			case RIGHT:
+				character.setX(entity.getX() + entity.getWidth() );
+				break;
+			case TOP:
+				character.setY(entity.getY() - character.getHeight());
+				break;
+			case BOTTOM:
+				character.setY(entity.getY() + entity.getHeight());
+				break;
+			case UPPER_LEFT:
+				character.setX(entity.getX() - character.getWidth());
+				character.setY(entity.getY() - character.getHeight());
+				break;
+			case BOTTOM_LEFT:
+				character.setY(entity.getY() + entity.getHeight());
+				character.setX(entity.getX() - character.getWidth());
+				break;
+			case UPPER_RIGHT:
+				character.setY(entity.getY() - character.getHeight());
+				character.setX(entity.getX() + entity.getWidth() );
+				break;
+			case BOTTOM_RIGHT:
+				character.setY(entity.getY() + entity.getHeight());
+				character.setX(entity.getX() + entity.getWidth() );
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void collisionDetected(AndroidEntity entity) {
 		livesLeft--;
 	}
 
 	private void checkCollisions() {
+		// Rectangle[] collisionRectangles = null;
+		// if (null != (collisionRectangles =
+		// character.getCollisionRectangles(floor))) {
+		// collisionDetected(floor, collisionRectangles);
+		// return;
+		// }
+		// if (null != (collisionRectangles =
+		// character.getCollisionRectangles(pipe1))) {
+		// collisionDetected(floor, collisionRectangles);
+		// return;
+		// }
+		// if (null != (collisionRectangles =
+		// character.getCollisionRectangles(pipe2))) {
+		// collisionDetected(floor, collisionRectangles);
+		// return;
+		// }
+
 		if (character.collides(floor)) {
-			hitSomething();
+			collisionDetected(floor);
 			return;
 		}
 		if (character.collides(pipe1)) {
-			hitSomething();
+			collisionDetected(pipe1);
 			return;
 		}
 		if (character.collides(pipe2)) {
-			hitSomething();
+			collisionDetected(pipe2);
 			return;
 		}
-		// for (Pipe pipe : pipes) {
-		// if (character.collides(pipe)) {
-		// hitSomething();
-		// return;
-		// }
-		// }
 	}
 
 	private void updatePaused(List<TouchEvent> touchEvents) {
@@ -216,19 +279,13 @@ public class GameScreen extends Screen implements Observer {
 	}
 
 	private void updateGameOver(List<TouchEvent> touchEvents) {
-		int len = touchEvents.size();
-		for (int i = 0; i < len; i++) {
-			TouchEvent event = touchEvents.get(i);
-			if (event.type == TouchEvent.TOUCH_UP) {
-				if (event.x > 300 && event.x < 980 && event.y > 100
-						&& event.y < 500) {
-					nullify();
-					game.setScreen(new MainMenuScreen(game));
-					return;
-				}
-			}
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-
+		nullify();
+		game.setScreen(new MainMenuScreen(game));
 	}
 
 	@Override
@@ -261,6 +318,11 @@ public class GameScreen extends Screen implements Observer {
 		// Set all variables to null. You will be recreating them in the
 		// constructor.
 		paint = null;
+		entities = null;
+		pipe1 = null;
+		pipe2 = null;
+		character = null;
+		floor = null;
 
 		// Call garbage collector to clean up memory.
 		System.gc();
@@ -300,8 +362,10 @@ public class GameScreen extends Screen implements Observer {
 
 	private void drawGameOverUI() {
 		Graphics g = game.getGraphics();
-		g.fillRect(0, 0, 801, 1201, Color.BLACK);
-		g.drawString("GAME OVER.", 350, 300, paint);
+        g.fillRect(0, 0, g.getWidth(), g.getHeight(), Color.BLACK);
+        int offsetX = 800/2 - Assets.gameOver.getWidth()/2;
+        int offsetY = 1200/2 - Assets.gameOver.getHeight()/2;
+        g.drawImage(Assets.gameOver, offsetX, offsetY);
 	}
 
 	@Override

@@ -9,8 +9,12 @@ public class Rectangle {
 	public static enum CollisionSpot {
 		NONE, CONTAINS, TOP, BOTTOM, LEFT, RIGHT, UPPER_LEFT, UPPER_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
 	};
-
+	public static boolean DISABLE_COLLISION_SPOT = true;
 	public static CollisionSpot getCollisionSpot(Rectangle a, Rectangle b) {
+		if(DISABLE_COLLISION_SPOT){
+			throw new UnsupportedOperationException("This is still buggy");
+		}
+		
 		if (!a.intersects(b)) {
 			return CollisionSpot.NONE;
 		}

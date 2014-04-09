@@ -56,7 +56,7 @@ public class GameCharacter extends AndroidEntity {
         fall(deltaTime);
     }
 
-    public void setCharacterY(int y) {
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -67,9 +67,9 @@ public class GameCharacter extends AndroidEntity {
         this.getBound().setY(y);
         
         if (this.getY() + getHeight() > 1200) {
-            this.setCharacterY(1200);
+            this.setY(1200);
         } else if(this.getY() < 0){
-            this.setCharacterY(0);
+            this.setY(0);
         }
     }
 
@@ -106,5 +106,9 @@ public class GameCharacter extends AndroidEntity {
 	@Override
 	public DrawMode getDrawMode() {
 		return DrawMode.SCALE;
+	}
+
+	public void setX(int x) {
+        this.x = x;
 	}
 }
