@@ -31,6 +31,10 @@ public class MainMenuScreen extends Screen {
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         int len = touchEvents.size();
         for (int i = 0; i < len; i++) {
+        	if(touchEvents.size() < len){
+        		//Handles out of bounds exception for the list getting empty after getting the size.
+        		return;
+        	}
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                 if (startMenuItem.collides(new Point(event.x, event.y))) {
@@ -70,6 +74,8 @@ public class MainMenuScreen extends Screen {
     @Override
     protected void initializeAssets() {
         Graphics g = game.getGraphics();
-        Assets.menu_start = g.newImage("start.png", ImageFormat.RGB565);
+        if(Assets.menu_start == null){
+        	Assets.menu_start = g.newImage("start.png", ImageFormat.RGB565);
+        }
     }
 }

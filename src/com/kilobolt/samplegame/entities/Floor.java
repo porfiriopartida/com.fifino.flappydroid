@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
-import com.kilobolt.framework.Graphics;
+//import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 import com.kilobolt.samplegame.Assets;
 
 public class Floor extends AndroidEntity {
-	private Image image;
-	private int offsetX = 0;
-	private int offsetY = 1200;
+//	private Image image;
+	private int x = 0;
+	private int y = 1200;
 	// private int tileWidth = 40;
 	// private int tileHeight = 40;
 	// private int speedX = 10;
@@ -19,14 +19,14 @@ public class Floor extends AndroidEntity {
 	private int height = 80;
 
 	public Floor() {
-		this.image = Assets.tileDirt;
+		Image image = Assets.tileDirt;
 		ArrayList<Image> list = new ArrayList<Image>();
 		list.add(image);
 		this.setImages(list);
 		Bound b = new Bound();
 		Rectangle rectangleA = new Rectangle();
 		rectangleA.setX(0).setY(0).setHeight(height).setWidth(width)
-				.setParentX(offsetX).setParentY(offsetY);
+				.setParentX(x).setParentY(y);
 		// Rectangle rectangleB = new Rectangle();
 		// rectangleB.setX(280).setY(0).setHeight(tileHeight)
 		// .setWidth(10 * tileWidth).setParentX(offsetX)
@@ -36,7 +36,7 @@ public class Floor extends AndroidEntity {
 		rectangles.add(rectangleA);
 		// rectangles.add(rectangleB);
 
-		b.setRectangles(rectangles).setX(offsetX).setY(offsetY);
+		b.setRectangles(rectangles).setX(x).setY(y);
 		// this.width = 5*tileWidth + 80 + 10 * tileWidth;
 		this.setBound(b);
 		setVisible(true);
@@ -47,28 +47,11 @@ public class Floor extends AndroidEntity {
 		return true;
 	}
 
-	@Override
-	public void draw(Graphics g) {
-		g.drawImage(this.image, offsetX, offsetY, width, height);
-		//
-		// if(isVisible()){
-		// int tileOffsetX = offsetX;
-		// int tileOffsetY = offsetY;
-		// for (int i = 0; i < 5; i++) {
-		// g.drawImage(this.image, tileOffsetX, tileOffsetY);
-		// tileOffsetX += tileWidth;
-		// }
-		// tileOffsetX += 80;
-		// for (int i = 0; i < 10; i++) {
-		// g.drawImage(this.image, tileOffsetX, tileOffsetY);
-		// tileOffsetX += tileWidth;
-		// }
-		//
-		// if (AndroidEntity.DEBUG_MODE) {
-		// getBound().draw(g);
-		// }
-		// }
-	}
+//	@Override
+//	public void draw(Graphics g) {
+//		super.draw(g);
+//		g.drawImage(this.image, x, y, width, height);
+//	}
 
 	public int getHeight() {
 		return height;
@@ -77,6 +60,31 @@ public class Floor extends AndroidEntity {
 	@Override
 	public void update(float deltaTime) {
 		// slide(deltaTime);
+	}
+
+	@Override
+	public int getX() {
+		return x;
+	}
+
+	@Override
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public int getAngle() {
+		return 0;
+	}
+
+	@Override
+	public DrawMode getDrawMode() {
+		return DrawMode.SCALE;
 	}
 
 	// private void slide(float deltaTime) {

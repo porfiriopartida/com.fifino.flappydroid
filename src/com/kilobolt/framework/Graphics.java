@@ -30,12 +30,15 @@ public interface Graphics {
 
     public void drawARGB(int i, int j, int k, int l);
 
-    void drawImage(Image Image, int x, int y, int angle);
+    void drawRotatedImage(Image Image, int x, int y, int angle);
 
 	void drawScaledImage(Image Image, int x, int y, int width, int height,
 			int srcX, int srcY, int srcWidth, int srcHeight);
 
-	void drawImage(Image Image, int x, int y, int width, int height);
+	void drawScaledImage(Image Image, int x, int y, int width, int height);
+
+	void drawScaledRotatedImage(Image Image, int x, int y, int width,
+			int height, int angle);
 
 
 }

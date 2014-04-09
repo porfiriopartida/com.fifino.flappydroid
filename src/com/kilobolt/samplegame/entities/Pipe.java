@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
-import com.kilobolt.framework.Graphics;
+//import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
 
 public class Pipe extends AndroidEntity {
 
-    private int offsetX = 800;
-    private int offsetY = 590;
+    private int x = 800;
+    private int y = 590;
     AndroidImage image;
     boolean upsideDown;
     private int speedX = 10;
@@ -30,7 +30,7 @@ public class Pipe extends AndroidEntity {
 
         this.upsideDown = upsideDown;
         if (upsideDown) {
-            this.offsetY = -1;
+            this.y = -1;
         }
 
         ArrayList<Image> list = new ArrayList<Image>();
@@ -40,11 +40,11 @@ public class Pipe extends AndroidEntity {
         Bound b = new Bound();
         Rectangle rectangle = new Rectangle();
         rectangle.setX(0).setY(0).setHeight(height).setWidth(width)
-                .setParentX(offsetX).setParentY(offsetY);
+                .setParentX(x).setParentY(y);
 
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         rectangles.add(rectangle);
-        b.setRectangles(rectangles).setX(offsetX).setY(offsetY);
+        b.setRectangles(rectangles).setX(x).setY(y);
 
         this.setBound(b);
     }
@@ -54,21 +54,23 @@ public class Pipe extends AndroidEntity {
         return true;
     }
 
-    @Override
-    public void draw(Graphics g) {
-        if (isVisible()) {
-            if (this.upsideDown) {
-                g.drawImage(image, offsetX, offsetY, 180);
-            } else {
-                g.drawImage(image, offsetX, offsetY);
-            }
-        }
-    }
+//    @Override
+//    public void draw(Graphics g) {
+//		super.draw(g);
+//        if (isVisible()) {
+//            if (this.upsideDown) {
+//                g.drawImage(image, offsetX, offsetY, 180);
+//            } else {
+//                g.drawImage(image, offsetX, offsetY);
+//            }
+//        }
+//    }
+    
     @Override
     public void update(float deltaTime) {
         slide(deltaTime);
-        boolean outOfBoundsLeft = this.offsetX + this.width <= 0;
-        boolean outOfBoundsRight = this.offsetX >= 800;
+        boolean outOfBoundsLeft = this.x + this.width <= 0;
+        boolean outOfBoundsRight = this.x >= 800;
         boolean isVisible = !(outOfBoundsLeft || outOfBoundsRight);
         setVisible(isVisible);
         if(outOfBoundsLeft){
@@ -79,8 +81,8 @@ public class Pipe extends AndroidEntity {
     }
 
     private void slide(float deltaTime) {
-        this.offsetX -= this.speedX * deltaTime;
-        this.getBound().setX(offsetX);
+        this.x -= this.speedX * deltaTime;
+        this.getBound().setX(x);
 //         if (this.offsetX + this.width <= 0 || this.offsetX >= 800) {
         // out of bounds
         // setVisible(false);
@@ -88,18 +90,43 @@ public class Pipe extends AndroidEntity {
     }
 
     public Pipe setX(int x) {
-        this.offsetX = x;
-        this.getBound().setX(offsetX);
+        this.x = x;
+        this.getBound().setX(x);
         return this;
     }
 
-	public int getX() {
-		return offsetX;
-	}
 	Pipe node;
 	public Pipe setPipe(Pipe pipe) {
 		this.node = pipe;
         return this;
+	}
+
+	public int getX() {
+		return x;
+	}
+	@Override
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public int getHeight() {
+		return height;
+	}
+
+	@Override
+	public int getAngle() {
+		return this.upsideDown ? 180:0;
+	}
+
+	@Override
+	public DrawMode getDrawMode() {
+		return this.upsideDown ? DrawMode.ROTATE:DrawMode.REGULAR;
 	}
 
     // public void setCharacter(GameCharacter character) {

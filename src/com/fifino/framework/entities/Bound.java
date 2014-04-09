@@ -2,8 +2,12 @@ package com.fifino.framework.entities;
 
 import java.util.List;
 import java.util.Random;
+
 import android.graphics.Color;
 import android.graphics.Point;
+
+import com.fifino.framework.implementation.AndroidEntity;
+import com.fifino.framework.implementation.AndroidEntity.DebugMode;
 import com.kilobolt.framework.Graphics;
 
 public class Bound {
@@ -64,6 +68,25 @@ public class Bound {
         return false;
     }
 
+    /**
+     * Gets the 2 rectangles that collided from local and remote entities.
+     * @param b
+     * @return
+     */
+    public Rectangle[] getCollisionRectangles(Bound b) {
+        List<Rectangle> rectanglesLocal = this.getRectangles();
+        List<Rectangle> rectanglesRemote = b.getRectangles();
+
+        for (Rectangle rectangleLocal : rectanglesLocal) {
+            for (Rectangle rectangleRemote : rectanglesRemote) {
+                if (rectangleLocal.intersects(rectangleRemote)) {
+                    return new Rectangle[]{rectangleLocal, rectangleRemote};
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean collides(Point p) {
         List<Rectangle> rectanglesLocal = this.getRectangles();
         for (Rectangle rectangleLocal : rectanglesLocal) {
@@ -82,8 +105,13 @@ public class Bound {
     }
     public void draw(Graphics g) {
         for (Rectangle r : rectangles) {
-            g.drawRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
-                    r.getHeight(), getColor());
+			 if (AndroidEntity.debugMode == DebugMode.FILL) {
+		            g.fillRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
+		                    r.getHeight(), getColor());
+			 }else if(AndroidEntity.debugMode == DebugMode.DRAW){
+		            g.drawRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
+		                    r.getHeight(), getColor());
+			 }
         }
     }
 }

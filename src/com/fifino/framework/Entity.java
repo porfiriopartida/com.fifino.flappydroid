@@ -3,10 +3,12 @@ package com.fifino.framework;
 import java.util.List;
 
 import com.fifino.framework.entities.Bound;
+import com.fifino.framework.entities.Rectangle;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
 public interface Entity {
+    
     public void setBound(Bound bound);
 
     public Bound getBound();
@@ -24,4 +26,6 @@ public interface Entity {
     public void draw(Graphics g);
     
     public void update(float delta);
+
+    public Rectangle[] getCollisionRectangles(Entity remoteEntity);
 }
