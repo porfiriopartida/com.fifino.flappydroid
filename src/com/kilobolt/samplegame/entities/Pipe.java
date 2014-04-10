@@ -3,7 +3,6 @@ package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
@@ -12,49 +11,44 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 //import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
+import com.kilobolt.samplegame.GameScreen;
 
 public class Pipe extends AndroidEntity {
 
     private int x = 800;
     private int y;
     private Image image;
-    boolean upsideDown;
-    private int speedX = 5;
-    private int width;
-    private int height;
+    private int speedX = 7;
+    private int width = 170;
+    private int height = 700;
     public static final int SEPARATION = 601;
     Random rnd;
 
     // private GameCharacter character;
 
-    public Pipe(boolean upsideDown) {
+    public Pipe() {
     	rnd = new Random();
         this.image = Assets.bluePipe;
-        this.width = image.getWidth();
-        this.height = image.getHeight();
         Bound b = new Bound();
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         this.setBound(b);
         b.setRectangles(rectangles);
 
-        this.upsideDown = upsideDown;
-//        if (upsideDown) {
-//            this.y = -1;
-//        }
-
         ArrayList<Image> list = new ArrayList<Image>();
         list.add(image);
         this.setImages(list);
 
-        Rectangle rectangle = new Rectangle();
-        rectangle.setX(0).setY(0).setHeight(height).setWidth(width);
-        rectangles.add(rectangle);
+        Rectangle rectangleA = new Rectangle();
+        Rectangle rectangleB = new Rectangle();
+        rectangleA.setX(0).setY(0).setHeight(height).setWidth(width);
+        rectangleB.setX(0).setY(-400 - height).setHeight(height).setWidth(width);
+        rectangles.add(rectangleA);
+        rectangles.add(rectangleB);
         generateY();
         b.setX(x);
     }
     public void generateY(){
-    	int randomValue = rnd.nextInt(490);
-    	this.y = this.upsideDown ? -randomValue: (590 + randomValue);
+    	this.y = rnd.nextInt(GameScreen.HEIGHT - 200);
         this.getBound().setY(y);
     }
     @Override
@@ -63,15 +57,11 @@ public class Pipe extends AndroidEntity {
     }
 
     @Override
-	public void draw(Graphics g) {
-		if (this.upsideDown) {
-			g.drawRotatedImage(image, x, y, 180);
-			g.drawImage(image, x, y + 500 + 590);
-		} else {
-			g.drawImage(image, x, y);
-			g.drawRotatedImage(image, x, y - 500 - 590, 180);
-		}
-	}
+    public void draw(Graphics g) {
+        g.drawScaledRotatedImage(image, x, y -400  , width, height, 180);
+        g.drawScaledImage(image, x, y, width, height);
+        super.drawBounds(g);
+    }
     
     @Override
     public void update(float deltaTime) {
@@ -124,17 +114,17 @@ public class Pipe extends AndroidEntity {
 
 	@Override
 	public int getHeight() {
-		return height;
+		return height * 2 + 400;
 	}
 
 	@Override
 	public int getAngle() {
-		return this.upsideDown ? 180:0;
+		return 0;
 	}
 
 	@Override
 	public DrawMode getDrawMode() {
-		return this.upsideDown ? DrawMode.ROTATE:DrawMode.REGULAR;
+		return DrawMode.REGULAR;
 	}
 
     // public void setCharacter(GameCharacter character) {

@@ -29,13 +29,13 @@ import com.kilobolt.samplegame.entities.GameCharacter;
 import com.kilobolt.samplegame.entities.Pipe;
 
 public class GameScreen extends Screen implements Observer {
-
 	enum GameState {
 		Ready, Running, Paused, GameOver
 	};
 	static{
-		AndroidEntity.debugMode = AndroidEntity.DebugMode.OFF;
+		AndroidEntity.debugMode = AndroidEntity.DebugMode.FILL;
 	}
+	public static int HEIGHT = 1280;
 
 	public static int HIGH_SCORE = 0;
 	// GameState state = GameState.Ready;
@@ -47,12 +47,12 @@ public class GameScreen extends Screen implements Observer {
 	int score = 0;
 	Paint paint;
 	ArrayList<Entity> entities;
-	// Pipe[] pipes;
 	GameCharacter character;
 	private Floor floor;
 
 	public GameScreen(Game game) {
 		super(game);
+		GameScreen.HEIGHT = game.getGraphics().getHeight();
 
 		// Defining a paint object
 		paint = new Paint();
@@ -101,19 +101,8 @@ public class GameScreen extends Screen implements Observer {
 	Pipe pipe1, pipe2;
 
 	private void setupPipes() {
-		// pipes1 = new Pipe[3];
-		// for (int i = 0; i < pipes.length; i++) {
-		// boolean upsideDown = i%2 == 0;
-		// Pipe pipe = new Pipe(upsideDown);
-		// entities.add(pipe);
-		// pipe.setVisible(false);
-		// pipe.setX(i*800 + 800);
-		// // pipe.setCharacter(character);
-		// pipe.addObserver(this);
-		// pipes[i] = pipe;
-		// }
-		pipe1 = new Pipe(true);
-		pipe2 = new Pipe(false);
+		pipe1 = new Pipe();
+		pipe2 = new Pipe();
 		entities.add(pipe1);
 		entities.add(pipe2);
 		pipe1.setX(1200).setPipe(pipe2).addObserver(this);
