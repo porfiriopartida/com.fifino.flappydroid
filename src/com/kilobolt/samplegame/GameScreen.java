@@ -32,6 +32,9 @@ public class GameScreen extends Screen implements Observer {
 
 	enum GameState {
 		Ready, Running, Paused, GameOver
+	};
+	static{
+		AndroidEntity.debugMode = AndroidEntity.DebugMode.OFF;
 	}
 
 	public static int HIGH_SCORE = 0;
@@ -64,8 +67,6 @@ public class GameScreen extends Screen implements Observer {
 		entities = new ArrayList<Entity>();
 		initializeAssets();
 		setupEntities();
-		
-		AndroidEntity.debugMode = AndroidEntity.DebugMode.OFF;
 	}
 
 	protected void initializeAssets() {
@@ -115,7 +116,7 @@ public class GameScreen extends Screen implements Observer {
 		pipe2 = new Pipe(false);
 		entities.add(pipe1);
 		entities.add(pipe2);
-		pipe1.setX(801).setPipe(pipe2).addObserver(this);
+		pipe1.setX(1200).setPipe(pipe2).addObserver(this);
 		pipe2.setX(pipe1.getX() + Pipe.SEPARATION).setPipe(pipe1)
 				.addObserver(this);
 	}
@@ -279,6 +280,7 @@ public class GameScreen extends Screen implements Observer {
 	}
 
 	private void updateGameOver(List<TouchEvent> touchEvents) {
+		drawGameOverUI();
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
@@ -307,9 +309,9 @@ public class GameScreen extends Screen implements Observer {
 		if (state == GameState.Paused) {
 			drawPausedUI();
 		}
-		if (state == GameState.GameOver) {
-			drawGameOverUI();
-		}
+//		if (state == GameState.GameOver) {
+//			drawGameOverUI();
+//		}
 
 	}
 
@@ -392,7 +394,6 @@ public class GameScreen extends Screen implements Observer {
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		System.out.println(observable.getClass().toString());
 		if (observable instanceof Pipe) {
 			// Pipe pipe = (Pipe) observable;
 			// pipe.deleteObservers();

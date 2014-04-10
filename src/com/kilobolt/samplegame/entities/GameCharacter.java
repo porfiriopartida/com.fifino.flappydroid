@@ -13,15 +13,15 @@ import com.kilobolt.samplegame.Assets;
 
 public class GameCharacter extends AndroidEntity {
 
-    private Image image;
-    private int speedY = 0;
+//    private Image image;
+    private int jumpInitialSpeed = 0;
     private int x = 201;
     private int y = 202;
     private double lastTime = Time.getCurrentTime();
     private int width = 100;
     private int height = 100;
     public GameCharacter() {
-        this.image = Assets.character;
+    	Image image = Assets.character;
 
         ArrayList<Image> imagesList = new ArrayList<Image>();
         imagesList.add(image);
@@ -63,7 +63,7 @@ public class GameCharacter extends AndroidEntity {
     public void fall(float deltaTime) {
         double now = Time.getCurrentTime();
         double time = now - lastTime;
-        this.y += Mechanics.getSpeed(time, speedY) * deltaTime;
+        this.y += Mechanics.getSpeed(time, jumpInitialSpeed) * deltaTime;
         this.getBound().setY(y);
         
         if (this.getY() + getHeight() > 1200) {
@@ -74,7 +74,7 @@ public class GameCharacter extends AndroidEntity {
     }
 
     public void jump() {
-    	speedY = -20;
+    	jumpInitialSpeed = -8;
         lastTime = Time.getCurrentTime();
     }
 

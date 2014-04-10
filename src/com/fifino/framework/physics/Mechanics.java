@@ -3,7 +3,7 @@ package com.fifino.framework.physics;
 
 public class Mechanics {
 
-    public static float GRAVITY = -80.5f;
+    public static float GRAVITY = -25f;
     public static float MAX_SPEED = 250f;
 
     public static double getSpeed(double time, float currentSpeed) {
@@ -14,8 +14,6 @@ public class Mechanics {
         if (speed < -MAX_SPEED) {
             speed = -MAX_SPEED;
         }
-        // System.out.println("SPEED = " + currentSpeed + " + " + force + " - "
-        // + Mechanics.GRAVITY + " * " + time );
         return speed;
     }
 }
