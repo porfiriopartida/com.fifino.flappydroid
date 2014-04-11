@@ -5,23 +5,20 @@ import java.util.ArrayList;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
-//import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Image;
+import com.kilobolt.framework.implementation.AndroidImage;
 
 public class MenuItem extends AndroidEntity {
-//    private Image image;
     private int x = 0;
     private int y = 0;
     private int width, height;
 
-    public MenuItem(Image image) {
-//        this.image = image;
+    public MenuItem(AndroidImage image) {
         x = 800/2 - image.getWidth()/2;
         y = 1200/2 - image.getHeight()/2;
         width = image.getWidth();
         height = image.getHeight();
 
-        ArrayList<Image> list = new ArrayList<Image>();
+        ArrayList<AndroidImage> list = new ArrayList<AndroidImage>();
         list.add(image);
         this.setImages(list);
         Bound b = new Bound();
@@ -76,10 +73,4 @@ public class MenuItem extends AndroidEntity {
 	public int getAngle() {
 		return 0;
 	}
-
-	@Override
-	public DrawMode getDrawMode() {
-		return DrawMode.REGULAR;
-	}
-
 }

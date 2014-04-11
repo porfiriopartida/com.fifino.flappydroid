@@ -3,12 +3,17 @@ package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import android.graphics.Bitmap;
+
+import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
+import com.fifino.framework.implementation.AndroidEntity.DebugMode;
 import com.kilobolt.framework.Graphics;
 //import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Image;
+import com.kilobolt.framework.implementation.AndroidImage;
 //import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
 import com.kilobolt.samplegame.GameScreen;
@@ -17,29 +22,25 @@ public class Pipe extends AndroidEntity {
 
     private int x = 800;
     private int y;
-    private Image image;
-    private int speedX = 7;
+    private Bitmap bitmapA, bitmapB;
+    private int speedX = 6;
     private int width = 170;
     private int height;
     private int gap = 400;
     private int minVisible = 200;
-    public static final int SEPARATION = 601;
+    public static final int SEPARATION = 651;
     Random rnd;
-
-    // private GameCharacter character;
 
     public Pipe() {
     	this.height = GameScreen.HEIGHT * 680 / 1280;
     	rnd = new Random();
-        this.image = Assets.bluePipe;
+    	AndroidImage image = ((AndroidImage) Assets.bluePipe);
+        this.bitmapB = BitmapTransform.scale(image.getBitmap(), width, height);
+        this.bitmapA = BitmapTransform.rotate(bitmapB, 180);
         Bound b = new Bound();
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         this.setBound(b);
         b.setRectangles(rectangles);
-
-        ArrayList<Image> list = new ArrayList<Image>();
-        list.add(image);
-        this.setImages(list);
 
         Rectangle rectangleA = new Rectangle();
         Rectangle rectangleB = new Rectangle();
@@ -61,9 +62,9 @@ public class Pipe extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
-        g.drawScaledRotatedImage(image, x, -y, width, height, 180);
-        g.drawScaledImage(image, x, -y + height + gap, width, height);
-        super.drawBounds(g);
+        g.drawBitmap(bitmapA, x, -y);
+        g.drawBitmap(bitmapB, x, -y + height + gap);
+	    super.drawBounds(g);
     }
     
     @Override
@@ -84,10 +85,6 @@ public class Pipe extends AndroidEntity {
     private void slide(float deltaTime) {
         this.x -= this.speedX * deltaTime;
         this.getBound().setX(x);
-//         if (this.offsetX + this.width <= 0 || this.offsetX >= 800) {
-        // out of bounds
-        // setVisible(false);
-        // }
     }
 
     public Pipe setX(int x) {
@@ -125,12 +122,4 @@ public class Pipe extends AndroidEntity {
 		return 0;
 	}
 
-	@Override
-	public DrawMode getDrawMode() {
-		return DrawMode.REGULAR;
-	}
-
-    // public void setCharacter(GameCharacter character) {
-    // this.character = character;
-    // }
 }

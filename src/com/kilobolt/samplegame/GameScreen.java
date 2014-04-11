@@ -78,7 +78,7 @@ public class GameScreen extends Screen implements Observer {
 			Assets.tileDirt = graphics
 					.newImage("tile-dirt.png", ImageFormat.RGB565);
 			
-			Assets.character = graphics.newImage("character.png",
+			Assets.character = graphics.newImage("flappy-bear.png",
 					ImageFormat.RGB565);
 	
 			Assets.gameOver = graphics.newImage("game-over.png",

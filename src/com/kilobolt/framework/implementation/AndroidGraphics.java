@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import com.fifino.framework.BitmapTransform;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Image;
 
@@ -130,21 +129,25 @@ public class AndroidGraphics implements Graphics {
         canvas.drawBitmap(((AndroidImage) Image).bitmap, x, y, null);
     }
     @Override
-    public void drawRotatedImage(Image Image, int x, int y, int angle) {
-        Bitmap bitmap = BitmapTransform.rotate(((AndroidImage) Image).bitmap, angle);
+    public void drawBitmap(Bitmap bitmap, int x, int y) {
         canvas.drawBitmap(bitmap, x, y, null);
     }
-    @Override
-    public void drawScaledImage(Image Image, int x, int y, int width, int height) {
-        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
-        canvas.drawBitmap(bitmap, x, y, null);
-    }
-    @Override
-    public void drawScaledRotatedImage(Image Image, int x, int y, int width, int height, int angle) {
-        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
-        bitmap = BitmapTransform.rotate(bitmap, angle);
-        canvas.drawBitmap(bitmap, x, y, null);
-    }
+//    @Override
+//    public void drawRotatedImage(Image Image, int x, int y, int angle) {
+//        Bitmap bitmap = BitmapTransform.rotate(((AndroidImage) Image).bitmap, angle);
+//        canvas.drawBitmap(bitmap, x, y, null);
+//    }
+//    @Override
+//    public void drawScaledImage(Image Image, int x, int y, int width, int height) {
+//        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
+//        canvas.drawBitmap(bitmap, x, y, null);
+//    }
+//    @Override
+//    public void drawScaledRotatedImage(Image Image, int x, int y, int width, int height, int angle) {
+//        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
+//        bitmap = BitmapTransform.rotate(bitmap, angle);
+//        canvas.drawBitmap(bitmap, x, y, null);
+//    }
     
     @Override
     @Deprecated

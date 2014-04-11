@@ -10,6 +10,7 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
+import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.entities.MenuItem;
 
 public class MainMenuScreen extends Screen {
@@ -22,7 +23,7 @@ public class MainMenuScreen extends Screen {
 
     @Override
     protected void setupEntities() {
-        startMenuItem = new MenuItem(Assets.menu_start);
+        startMenuItem = new MenuItem((AndroidImage)Assets.menu_start);
     }
 
     @Override

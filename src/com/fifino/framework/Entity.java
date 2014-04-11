@@ -1,11 +1,8 @@
 package com.fifino.framework;
 
-import java.util.List;
-
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Image;
 
 public interface Entity {
     
@@ -13,11 +10,11 @@ public interface Entity {
 
     public Bound getBound();
 
-    public void setImages(List<Image> images);
+//    public void setImages(List<Image> images);
 
-    public List<Image> getImages();
+//    public List<Image> getImages();
 
-    public void addImage(Image image);
+//    public void addImage(Image image);
 
     public boolean collides(Entity e);
 

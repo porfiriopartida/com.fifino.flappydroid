@@ -9,7 +9,7 @@ import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Image;
+import com.kilobolt.framework.implementation.AndroidImage;
 
 public abstract class AndroidEntity extends Observable implements Entity {
     public enum DebugMode{ OFF, FILL, DRAW}
@@ -26,7 +26,7 @@ public abstract class AndroidEntity extends Observable implements Entity {
     }
 
     private Bound bound;
-    private List<Image> images;
+    private List<AndroidImage> images;
 
     @Override
     public Bound getBound() {
@@ -38,18 +38,15 @@ public abstract class AndroidEntity extends Observable implements Entity {
         this.bound = bound;
     }
 
-    @Override
-    public List<Image> getImages() {
+    public List<AndroidImage> getImages() {
         return images;
     }
 
-    @Override
-    public void setImages(List<Image> images) {
+    public void setImages(List<AndroidImage> images) {
         this.images = images;
     }
 
-    @Override
-    public void addImage(Image image) {
+    public void addImage(AndroidImage image) {
         this.images.add(image);
     }
 
@@ -77,32 +74,20 @@ public abstract class AndroidEntity extends Observable implements Entity {
         return this.getBound().collides(p);
     }
     public void draw(Graphics g){
-		for (Image image : images) {
-			DrawMode drawMode = getDrawMode();
-			if (drawMode == DrawMode.REGULAR) {
-				g.drawImage(image, getX(), getY());
-			} else if (drawMode == DrawMode.SCALE) {
-				g.drawScaledImage(image, getX(), getY(), getWidth(), getHeight());
-			} else if (drawMode == DrawMode.ROTATE) {
-				g.drawRotatedImage(image, getX(), getY(), getAngle());
-			}else if(drawMode == DrawMode.SCALE_ROTATE)
-			{
-				g.drawScaledRotatedImage(image, getX(), getY(), getWidth(), getHeight(), getAngle());
-			}
+		for (AndroidImage image : images) {
+			g.drawImage(image, getX(), getY());
 		}
-		if (AndroidEntity.debugMode != DebugMode.OFF) {
-			drawBounds(g);
-		}
+		drawBounds(g);
 	}
 
 	public void drawBounds(Graphics g) {
-		 this.getBound().draw(g);
+		if (AndroidEntity.debugMode != DebugMode.OFF) {
+			 this.getBound().draw(g);
+		}
 	}
 	public abstract int getX();
 	public abstract int getY();
 	public abstract int getWidth();
 	public abstract int getHeight();
 	public abstract int getAngle();
-	public abstract DrawMode getDrawMode();
-	public enum DrawMode {REGULAR, ROTATE, SCALE, SCALE_ROTATE};
 }

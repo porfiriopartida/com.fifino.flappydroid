@@ -1,5 +1,6 @@
 package com.kilobolt.framework;
 
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 
 public interface Graphics {
@@ -30,15 +31,18 @@ public interface Graphics {
 
     public void drawARGB(int i, int j, int k, int l);
 
-    void drawRotatedImage(Image Image, int x, int y, int angle);
-
+//    void drawRotatedImage(Image Image, int x, int y, int angle);
+//
+    @Deprecated
 	void drawScaledImage(Image Image, int x, int y, int width, int height,
 			int srcX, int srcY, int srcWidth, int srcHeight);
 
-	void drawScaledImage(Image Image, int x, int y, int width, int height);
+	void drawBitmap(Bitmap bitmap, int x, int y);
 
-	void drawScaledRotatedImage(Image Image, int x, int y, int width,
-			int height, int angle);
+//	void drawScaledImage(Image Image, int x, int y, int width, int height);
+//
+//	void drawScaledRotatedImage(Image Image, int x, int y, int width,
+//			int height, int angle);
 
 
 }
