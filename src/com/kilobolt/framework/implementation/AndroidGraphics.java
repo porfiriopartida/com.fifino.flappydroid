@@ -132,27 +132,9 @@ public class AndroidGraphics implements Graphics {
     public void drawBitmap(Bitmap bitmap, int x, int y) {
         canvas.drawBitmap(bitmap, x, y, null);
     }
-//    @Override
-//    public void drawRotatedImage(Image Image, int x, int y, int angle) {
-//        Bitmap bitmap = BitmapTransform.rotate(((AndroidImage) Image).bitmap, angle);
-//        canvas.drawBitmap(bitmap, x, y, null);
-//    }
-//    @Override
-//    public void drawScaledImage(Image Image, int x, int y, int width, int height) {
-//        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
-//        canvas.drawBitmap(bitmap, x, y, null);
-//    }
-//    @Override
-//    public void drawScaledRotatedImage(Image Image, int x, int y, int width, int height, int angle) {
-//        Bitmap bitmap = BitmapTransform.scale(((AndroidImage) Image).bitmap, width, height);
-//        bitmap = BitmapTransform.rotate(bitmap, angle);
-//        canvas.drawBitmap(bitmap, x, y, null);
-//    }
-    
     @Override
-    @Deprecated
-    public void drawScaledImage(Image Image, int x, int y, int width,
-            int height, int srcX, int srcY, int srcWidth, int srcHeight) {
+    public void drawScaledBitmap(Bitmap bitmap, int x, int y, int width,
+                int height, int srcX, int srcY, int srcWidth, int srcHeight) {
 
         srcRect.left = srcX;
         srcRect.top = srcY;
@@ -163,9 +145,15 @@ public class AndroidGraphics implements Graphics {
         dstRect.top = y;
         dstRect.right = x + width;
         dstRect.bottom = y + height;
-
-        canvas.drawBitmap(((AndroidImage) Image).bitmap, srcRect, dstRect, null);
-
+        
+        canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+    }
+    
+    @Override
+    public void drawScaledImage(Image image, int x, int y, int width,
+            int height, int srcX, int srcY, int srcWidth, int srcHeight) {
+        Bitmap bitmap = ((AndroidImage) image).getBitmap();
+        this.drawScaledBitmap(bitmap, x, y, width, height, srcX, srcY, srcWidth, srcHeight);
     }
 
     @Override

@@ -33,11 +33,14 @@ public interface Graphics {
 
 //    void drawRotatedImage(Image Image, int x, int y, int angle);
 //
-    @Deprecated
+    //Used for sprites
 	void drawScaledImage(Image Image, int x, int y, int width, int height,
 			int srcX, int srcY, int srcWidth, int srcHeight);
 
 	void drawBitmap(Bitmap bitmap, int x, int y);
+
+    void drawScaledBitmap(Bitmap bitmap, int x, int y, int width, int height,
+            int srcX, int srcY, int srcWidth, int srcHeight);
 
 //	void drawScaledImage(Image Image, int x, int y, int width, int height);
 //

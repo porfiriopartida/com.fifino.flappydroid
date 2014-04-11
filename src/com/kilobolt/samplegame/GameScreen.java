@@ -15,7 +15,6 @@ import java.util.Random;
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.entities.Rectangle.CollisionSpot;
@@ -27,7 +26,6 @@ import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
 import com.kilobolt.samplegame.entities.Coin;
 import com.kilobolt.samplegame.entities.Floor;
-//import com.kilobolt.samplegame.entities.Floor;
 import com.kilobolt.samplegame.entities.GameCharacter;
 import com.kilobolt.samplegame.entities.Pipe;
 
@@ -81,8 +79,8 @@ public class GameScreen extends Screen implements Observer {
 			Assets.tileDirt = graphics
 					.newImage("tile-dirt.png", ImageFormat.RGB565);
 			
-			Assets.character = graphics.newImage("flappy-bear.png",
-					ImageFormat.RGB565);
+            Assets.character = graphics
+                    .newImage("character.png", ImageFormat.RGB565);
 	
 			Assets.gameOver = graphics.newImage("game-over.png",
 					ImageFormat.RGB565);

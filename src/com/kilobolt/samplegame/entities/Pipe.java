@@ -60,7 +60,10 @@ public class Pipe extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
-        g.drawBitmap(bitmapA, x, y);
+//        g.drawBitmap(bitmapA, x, y);
+//        g.drawBitmap(bitmapB, x, y + height + gap);
+//        g.drawScaledImage(image, getX(),  getY(), width, height, 0, 100 * frame, width, height);
+        g.drawScaledBitmap(bitmapA, x, 5, width, height + y, 0, -y, width, height + y);
         g.drawBitmap(bitmapB, x, y + height + gap);
 	    super.drawBounds(g);
     }

@@ -1,12 +1,12 @@
 package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
-
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
 import com.fifino.framework.physics.Mechanics;
 import com.fifino.framework.tools.Time;
+import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
 
@@ -16,20 +16,21 @@ public class GameCharacter extends AndroidEntity {
 	private int x = 201;
 	private int y = 202;
 	private double lastTime = Time.getCurrentTime();
-	private int width = 100;
+	private int width = 125;
 	private int height = 93;
-
+	private AndroidImage image;
+	private int frame = 0;
 	public GameCharacter() {
-		AndroidImage image = ((AndroidImage)Assets.character);
-		image.scale(width, height);
+		this.image = ((AndroidImage)Assets.character); 
+//		image.scale(width, height);
 
-		ArrayList<AndroidImage> imagesList = new ArrayList<AndroidImage>();
-		imagesList.add(image);
-		this.setImages(imagesList);
+//		ArrayList<AndroidImage> imagesList = new ArrayList<AndroidImage>();
+//		imagesList.add(image);
+//		this.setImages(imagesList);
 
 		Bound b = new Bound();
 		Rectangle rectangle = new Rectangle();
-		rectangle.setX(0).setY(0).setHeight(height).setWidth(width);
+		rectangle.setX(32).setY(1).setHeight(90).setWidth(60);
 
 		ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
 		rectangles.add(rectangle);
@@ -57,7 +58,9 @@ public class GameCharacter extends AndroidEntity {
 	public void fall(float deltaTime) {
 		double now = Time.getCurrentTime();
 		double time = now - lastTime;
-		this.y += Mechanics.getSpeed(time, jumpInitialSpeed) * deltaTime;
+		double speed =Mechanics.getSpeed(time, jumpInitialSpeed) * deltaTime;
+		frame = speed > 0 ? 0:1;
+		this.y += speed;
 		this.getBound().setY(y);
 
 		if (this.getY() + getHeight() > 1200) {
@@ -104,5 +107,13 @@ public class GameCharacter extends AndroidEntity {
 
 	public void setX(int x) {
 		this.x = x;
+	}
+	@Override
+	public void draw(Graphics g){
+//        for (AndroidImage image : images) {
+//        g.drawImage(image, getX(), getY());
+        g.drawScaledImage(image, getX(),  getY(), width, height, 0, 100 * frame, width, height);
+//        }
+        super.drawBounds(g);
 	}
 }

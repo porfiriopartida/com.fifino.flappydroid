@@ -1,13 +1,14 @@
 package com.kilobolt.samplegame;
 
-import com.fifino.framework.implementation.AndroidEntity;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.implementation.AndroidGame;
 
 public class SampleGame extends AndroidGame {
-	static{
-		AndroidEntity.debugMode = AndroidEntity.DebugMode.OFF;
-	}
+    public enum DebugMode{ OFF, FILL, DRAW}
+    public static DebugMode debugMode = SampleGame.DebugMode.OFF;
+//	static{
+//	    SampleGame.debugMode = SampleGame.DebugMode.FILL;
+//	}
     @Override
     public Screen getInitScreen() {
         return new MainMenuScreen(this);
