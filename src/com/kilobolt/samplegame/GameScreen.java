@@ -10,6 +10,8 @@ import java.util.Random;
 
 
 
+
+
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +25,7 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
+import com.kilobolt.samplegame.entities.Coin;
 import com.kilobolt.samplegame.entities.Floor;
 //import com.kilobolt.samplegame.entities.Floor;
 import com.kilobolt.samplegame.entities.GameCharacter;
@@ -83,6 +86,9 @@ public class GameScreen extends Screen implements Observer {
 	
 			Assets.gameOver = graphics.newImage("game-over.png",
 					ImageFormat.RGB565);
+			
+			Assets.coin = graphics.newImage("coin.png",
+					ImageFormat.RGB565);
 	
 			Assets.click = game.getAudio().createSound("explode.ogg");
 		}
@@ -105,6 +111,12 @@ public class GameScreen extends Screen implements Observer {
 		pipe1.setX(1200).setPipe(pipe2).addObserver(this);
 		pipe2.setX(pipe1.getX() + Pipe.SEPARATION).setPipe(pipe1)
 				.addObserver(this);
+		Coin c1 = new Coin();
+		Coin c2 = new Coin();
+		entities.add(c1);
+		entities.add(c2);
+		pipe1.setCoin(c1);
+		pipe2.setCoin(c2);
 	}
 
 	private void setupFloor() {
@@ -253,6 +265,16 @@ public class GameScreen extends Screen implements Observer {
 			collisionDetected(pipe2);
 			return;
 		}
+		if(pipe1.getCoin().isVisible() && character.collides(pipe1.getCoin())){
+			pipe1.getCoin().setVisible(false);
+			scored();
+			return;
+		}
+		if(pipe2.getCoin().isVisible() && character.collides(pipe2.getCoin())){
+			pipe2.getCoin().setVisible(false);
+			scored();
+			return;
+		}
 	}
 
 	private void updatePaused(List<TouchEvent> touchEvents) {
@@ -380,17 +402,21 @@ public class GameScreen extends Screen implements Observer {
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		if (observable instanceof Pipe) {
-			// Pipe pipe = (Pipe) observable;
-			// pipe.deleteObservers();
-			// this.entities.remove(pipe);
-			score++;
-			if (score > GameScreen.HIGH_SCORE) {
-				GameScreen.HIGH_SCORE = score;
-			}
-		} else if (observable instanceof GameCharacter) {
-			// user hit something
-			livesLeft--;
+		throw new UnsupportedOperationException("Observable might going to be removed.");
+//		if (observable instanceof Pipe) {
+//			// Pipe pipe = (Pipe) observable;
+//			// pipe.deleteObservers();
+//			// this.entities.remove(pipe);
+//			scored();
+//		} else if (observable instanceof GameCharacter) {
+//			// user hit something
+//			livesLeft--;
+//		}
+	}
+	private void scored(){
+		score++;
+		if (score > GameScreen.HIGH_SCORE) {
+			GameScreen.HIGH_SCORE = score;
 		}
 	}
 }

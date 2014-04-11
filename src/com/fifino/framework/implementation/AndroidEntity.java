@@ -15,7 +15,7 @@ public abstract class AndroidEntity extends Observable implements Entity {
     public enum DebugMode{ OFF, FILL, DRAW}
     public static DebugMode debugMode = DebugMode.OFF; 
     
-    private boolean isVisible;
+    private boolean isVisible = true;
     
     public boolean isVisible() {
         return isVisible;
@@ -74,9 +74,11 @@ public abstract class AndroidEntity extends Observable implements Entity {
         return this.getBound().collides(p);
     }
     public void draw(Graphics g){
-		for (AndroidImage image : images) {
-			g.drawImage(image, getX(), getY());
-		}
+    	if(isVisible()){
+			for (AndroidImage image : images) {
+				g.drawImage(image, getX(), getY());
+			}
+    	}
 		drawBounds(g);
 	}
 

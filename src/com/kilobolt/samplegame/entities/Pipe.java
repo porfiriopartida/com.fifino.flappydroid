@@ -10,11 +10,8 @@ import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
-import com.fifino.framework.implementation.AndroidEntity.DebugMode;
 import com.kilobolt.framework.Graphics;
-//import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
-//import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
 import com.kilobolt.samplegame.GameScreen;
 
@@ -29,9 +26,10 @@ public class Pipe extends AndroidEntity {
     private int gap = 400;
     private int minVisible = 200;
     public static final int SEPARATION = 651;
-    Random rnd;
-
-    public Pipe() {
+    private Random rnd;
+    private Coin coin;
+    
+	public Pipe() {
     	this.height = GameScreen.HEIGHT * 680 / 1280;
     	rnd = new Random();
     	AndroidImage image = ((AndroidImage) Assets.bluePipe);
@@ -52,8 +50,8 @@ public class Pipe extends AndroidEntity {
         b.setX(x);
     }
     public void generateY(){
-    	this.y = rnd.nextInt(height - minVisible);
-        this.getBound().setY(-y);
+    	this.y = -rnd.nextInt(height - minVisible);
+        this.getBound().setY(y);
     }
     @Override
     public boolean isCollidable() {
@@ -62,8 +60,8 @@ public class Pipe extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
-        g.drawBitmap(bitmapA, x, -y);
-        g.drawBitmap(bitmapB, x, -y + height + gap);
+        g.drawBitmap(bitmapA, x, y);
+        g.drawBitmap(bitmapB, x, y + height + gap);
 	    super.drawBounds(g);
     }
     
@@ -76,10 +74,11 @@ public class Pipe extends AndroidEntity {
         setVisible(isVisible);
         if(outOfBoundsLeft){
             this.setX(this.node.getX() + Pipe.SEPARATION);
-            this.setChanged();
-            this.notifyObservers();
             generateY();
+    		coin.setVisible(true);
         }
+        coin.setX(this.x);
+        coin.setY(this.y + height + 150);
     }
 
     private void slide(float deltaTime) {
@@ -122,4 +121,10 @@ public class Pipe extends AndroidEntity {
 		return 0;
 	}
 
+    public Coin getCoin() {
+		return coin;
+	}
+	public void setCoin(Coin coin) {
+		this.coin = coin;
+	}
 }
