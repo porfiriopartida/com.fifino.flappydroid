@@ -74,7 +74,7 @@ public class GameCharacter extends AndroidEntity {
     }
 
     public void jump() {
-    	jumpInitialSpeed = -8;
+    	jumpInitialSpeed = -9;
         lastTime = Time.getCurrentTime();
     }
 

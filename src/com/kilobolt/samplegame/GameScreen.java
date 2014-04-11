@@ -32,9 +32,6 @@ public class GameScreen extends Screen implements Observer {
 	enum GameState {
 		Ready, Running, Paused, GameOver
 	};
-	static{
-		AndroidEntity.debugMode = AndroidEntity.DebugMode.FILL;
-	}
 	public static int HEIGHT = 1280;
 
 	public static int HIGH_SCORE = 0;

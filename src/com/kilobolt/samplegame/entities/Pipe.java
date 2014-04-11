@@ -20,13 +20,16 @@ public class Pipe extends AndroidEntity {
     private Image image;
     private int speedX = 7;
     private int width = 170;
-    private int height = 700;
+    private int height;
+    private int gap = 400;
+    private int minVisible = 200;
     public static final int SEPARATION = 601;
     Random rnd;
 
     // private GameCharacter character;
 
     public Pipe() {
+    	this.height = GameScreen.HEIGHT * 680 / 1280;
     	rnd = new Random();
         this.image = Assets.bluePipe;
         Bound b = new Bound();
@@ -41,15 +44,15 @@ public class Pipe extends AndroidEntity {
         Rectangle rectangleA = new Rectangle();
         Rectangle rectangleB = new Rectangle();
         rectangleA.setX(0).setY(0).setHeight(height).setWidth(width);
-        rectangleB.setX(0).setY(-400 - height).setHeight(height).setWidth(width);
+        rectangleB.setX(0).setY(height + gap).setHeight(height).setWidth(width);
         rectangles.add(rectangleA);
         rectangles.add(rectangleB);
         generateY();
         b.setX(x);
     }
     public void generateY(){
-    	this.y = rnd.nextInt(GameScreen.HEIGHT - 200);
-        this.getBound().setY(y);
+    	this.y = rnd.nextInt(height - minVisible);
+        this.getBound().setY(-y);
     }
     @Override
     public boolean isCollidable() {
@@ -58,8 +61,8 @@ public class Pipe extends AndroidEntity {
 
     @Override
     public void draw(Graphics g) {
-        g.drawScaledRotatedImage(image, x, y -400  , width, height, 180);
-        g.drawScaledImage(image, x, y, width, height);
+        g.drawScaledRotatedImage(image, x, -y, width, height, 180);
+        g.drawScaledImage(image, x, -y + height + gap, width, height);
         super.drawBounds(g);
     }
     
