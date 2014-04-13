@@ -12,9 +12,9 @@ import com.kilobolt.samplegame.GameScreen;
 
 public class Floor extends AndroidEntity {
 	private int x = 0;
-	private int y = 1200;
+	private int y;
 	private int width = 100;
-	public static int HEIGHT = 80;
+	public static int HEIGHT = 180;
 //	Bitmap[] bitmapArray;
 	AndroidImage image;
 	private int pieces = 0;
@@ -26,6 +26,7 @@ public class Floor extends AndroidEntity {
 //		ArrayList<AndroidImage> list = new ArrayList<AndroidImage>();
 //		list.add(image);
 //		this.setImages(list);
+		y = GameScreen.HEIGHT - Floor.HEIGHT;
 		Bound b = new Bound();
 		Rectangle rectangleA = new Rectangle();
 		rectangleA.setX(0).setY(0).setHeight(Floor.HEIGHT).setWidth(GameScreen.WIDTH)

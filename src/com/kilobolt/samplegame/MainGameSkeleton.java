@@ -79,7 +79,7 @@ public class MainGameSkeleton extends Screen {
         // Now the updateRunning() method will be called!
 
         if (touchEvents.size() > 0) {
-            Assets.click.play();
+//            Assets.clickSound.play();
             state = GameState.Running;
         }
     }

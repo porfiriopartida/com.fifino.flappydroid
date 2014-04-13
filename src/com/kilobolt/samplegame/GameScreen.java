@@ -104,8 +104,10 @@ public class GameScreen extends Screen implements Observer {
 			Assets.coin = graphics.newImage("coin.png", ImageFormat.RGB565);
 			Assets.debugButton = graphics.newImage("debug.png", ImageFormat.RGB565);
 
-			Assets.click = game.getAudio().createSound("explode.ogg");
-			
+			Assets.jumpSound = game.getAudio().createSound("jump.wav");
+			Assets.hitSound = game.getAudio().createSound("hit.wav");
+			Assets.coinSound = game.getAudio().createSound("coin.wav");
+			Assets.tenCoinsSound = game.getAudio().createSound("10-coins.wav");
 		}
 		AndroidImage debugButtonImage = (AndroidImage)Assets.debugButton;
 		debugButton = new MenuItem(debugButtonImage, 10, 10);
@@ -180,10 +182,10 @@ public class GameScreen extends Screen implements Observer {
 		// state now becomes GameState.Running.
 		// Now the updateRunning() method will be called!
 
-		if (touchEvents.size() > 0) {
-			Assets.click.play();
-			state = GameState.Running;
-		}
+//		if (touchEvents.size() > 0) {
+//			Assets.click.play();
+//			state = GameState.Running;
+//		}
 	}
 
 	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
@@ -197,6 +199,7 @@ public class GameScreen extends Screen implements Observer {
                 	SampleGame.debugMode = SampleGame.debugMode == SampleGame.DebugMode.OFF ? SampleGame.DebugMode.FILL:SampleGame.DebugMode.OFF;
                 }
 				character.jump();
+				Assets.jumpSound.play();
 			}
 		}
 		// 2. Check miscellaneous events like death:
@@ -262,6 +265,7 @@ public class GameScreen extends Screen implements Observer {
 	}
 
 	private void collisionDetected(AndroidEntity entity) {
+		Assets.hitSound.play();
 		livesLeft--;
 	}
 
@@ -449,6 +453,11 @@ public class GameScreen extends Screen implements Observer {
 
 	private void scored() {
 		score++;
+		if(score%10 == 0){
+			Assets.tenCoinsSound.play();
+		}else{
+			Assets.coinSound.play();
+		}
 		if (score > GameScreen.HIGH_SCORE) {
 			GameScreen.HIGH_SCORE = score;
 		}

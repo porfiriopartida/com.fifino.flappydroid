@@ -5,10 +5,7 @@ import com.kilobolt.framework.implementation.AndroidGame;
 
 public class SampleGame extends AndroidGame {
     public enum DebugMode{ OFF, FILL, DRAW}
-    public static DebugMode debugMode = SampleGame.DebugMode.FILL;
-//	static{
-//	    SampleGame.debugMode = SampleGame.DebugMode.FILL;
-//	}
+    public static DebugMode debugMode = SampleGame.DebugMode.OFF;
     @Override
     public Screen getInitScreen() {
         return new MainMenuScreen(this);

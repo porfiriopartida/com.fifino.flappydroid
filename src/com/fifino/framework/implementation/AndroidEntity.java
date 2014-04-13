@@ -74,8 +74,8 @@ public abstract class AndroidEntity extends Observable implements Entity {
 			for (AndroidImage image : images) {
 				g.drawImage(image, getX(), getY());
 			}
+			drawBounds(g);
     	}
-		drawBounds(g);
 	}
 
 	public void drawBounds(Graphics g) {
