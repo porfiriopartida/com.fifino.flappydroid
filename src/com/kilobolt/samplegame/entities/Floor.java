@@ -5,24 +5,30 @@ import java.util.ArrayList;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
+import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.samplegame.Assets;
+import com.kilobolt.samplegame.GameScreen;
 
 public class Floor extends AndroidEntity {
 	private int x = 0;
 	private int y = 1200;
-	private int width = 1200;
-	private int height = 80;
-
+	private int width = 100;
+	public static int HEIGHT = 80;
+//	Bitmap[] bitmapArray;
+	AndroidImage image;
+	private int pieces = 0;
 	public Floor() {
-		AndroidImage image = (AndroidImage)Assets.tileDirt;
-		image.scale(width, height);
-		ArrayList<AndroidImage> list = new ArrayList<AndroidImage>();
-		list.add(image);
-		this.setImages(list);
+		this.pieces = GameScreen.WIDTH/width + 1;
+//		bitmapArray = new Bitmap[pieces];
+		image = (AndroidImage)Assets.tileDirt;
+		image.scale(width, Floor.HEIGHT);
+//		ArrayList<AndroidImage> list = new ArrayList<AndroidImage>();
+//		list.add(image);
+//		this.setImages(list);
 		Bound b = new Bound();
 		Rectangle rectangleA = new Rectangle();
-		rectangleA.setX(0).setY(0).setHeight(height).setWidth(width)
+		rectangleA.setX(0).setY(0).setHeight(Floor.HEIGHT).setWidth(GameScreen.WIDTH)
 				.setParentX(x).setParentY(y);
 
 		ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
@@ -39,14 +45,25 @@ public class Floor extends AndroidEntity {
 	}
 
 	public int getHeight() {
-		return height;
+		return Floor.HEIGHT;
 	}
 
 	@Override
 	public void update(float deltaTime) {
 		// slide(deltaTime);
+		x -= Pipe.speedX * deltaTime;
+		if(x<=-width){
+			x = 0;
+		}
 	}
-
+	@Override
+	public void draw(Graphics g){
+		for(int i = 0; i<this.pieces; i++){
+			g.drawImage(this.image, x + i*width, y);
+		}
+		super.drawBounds(g);
+	}
+	
 	@Override
 	public int getX() {
 		return x;

@@ -80,7 +80,6 @@ public abstract class AndroidEntity extends Observable implements Entity {
 
 	public void drawBounds(Graphics g) {
 		if (SampleGame.debugMode != SampleGame.DebugMode.OFF) {
-		    System.out.println("Drawing bounds...");
 			 this.getBound().draw(g);
 		}
 	}

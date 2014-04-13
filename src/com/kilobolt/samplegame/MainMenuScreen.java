@@ -23,7 +23,10 @@ public class MainMenuScreen extends Screen {
 
     @Override
     protected void setupEntities() {
-        startMenuItem = new MenuItem((AndroidImage)Assets.menu_start);
+    	AndroidImage image = (AndroidImage)Assets.menu_start;
+        int x = 800/2 - image.getWidth()/2;
+        int y = 1200/2 - image.getHeight()/2;
+        startMenuItem = new MenuItem(image, x, y);
     }
 
     @Override

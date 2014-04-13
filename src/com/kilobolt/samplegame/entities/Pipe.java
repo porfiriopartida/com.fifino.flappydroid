@@ -20,7 +20,7 @@ public class Pipe extends AndroidEntity {
     private int x = 800;
     private int y;
     private Bitmap bitmapA, bitmapB;
-    private int speedX = 6;
+    public static int speedX = 6;
     private int width = 170;
     private int height;
     private int gap = 400;
@@ -85,7 +85,7 @@ public class Pipe extends AndroidEntity {
     }
 
     private void slide(float deltaTime) {
-        this.x -= this.speedX * deltaTime;
+        this.x -= Pipe.speedX * deltaTime;
         this.getBound().setX(x);
     }
 

@@ -8,17 +8,17 @@ import java.util.Random;
 
 
 
-
-
-
-
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+
+import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.entities.Rectangle.CollisionSpot;
 import com.fifino.framework.implementation.AndroidEntity;
+import com.kilobolt.framework.implementation.AndroidImage;
 import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
@@ -27,13 +27,16 @@ import com.kilobolt.framework.Input.TouchEvent;
 import com.kilobolt.samplegame.entities.Coin;
 import com.kilobolt.samplegame.entities.Floor;
 import com.kilobolt.samplegame.entities.GameCharacter;
+import com.kilobolt.samplegame.entities.MenuItem;
 import com.kilobolt.samplegame.entities.Pipe;
 
 public class GameScreen extends Screen implements Observer {
 	enum GameState {
 		Ready, Running, Paused, GameOver
 	};
+
 	public static int HEIGHT = 1280;
+	public static int WIDTH = 800;
 
 	public static int HIGH_SCORE = 0;
 	// GameState state = GameState.Ready;
@@ -47,10 +50,17 @@ public class GameScreen extends Screen implements Observer {
 	ArrayList<Entity> entities;
 	GameCharacter character;
 	private Floor floor;
+	AndroidImage mountainsImage;
+	int mountainsSpeed = 3;
+	int mountainsX = 0;
+	int mountainsY;
+	int mountainsHeight = 400;
+    private MenuItem debugButton;
 
 	public GameScreen(Game game) {
 		super(game);
 		GameScreen.HEIGHT = game.getGraphics().getHeight();
+		GameScreen.WIDTH = game.getGraphics().getHeight();
 
 		// Defining a paint object
 		paint = new Paint();
@@ -68,35 +78,46 @@ public class GameScreen extends Screen implements Observer {
 	}
 
 	protected void initializeAssets() {
-		if(Assets.background == null){
+		if (Assets.background == null) {
 			Graphics graphics = game.getGraphics();
 			Assets.background = graphics.newImage("bg-vertical.png",
 					ImageFormat.RGB565);
-			
-			Assets.bluePipe = graphics
-					.newImage("blue-pipe.png", ImageFormat.RGB565);
-			
-			Assets.tileDirt = graphics
-					.newImage("tile-dirt.png", ImageFormat.RGB565);
-			
-            Assets.character = graphics
-                    .newImage("character.png", ImageFormat.RGB565);
-	
+			Assets.mountains = graphics.newImage("mountains.png",
+					ImageFormat.RGB565);
+			mountainsImage = (AndroidImage) Assets.mountains;
+			mountainsImage.setBitmap(BitmapTransform.scale(
+					mountainsImage.getBitmap(), GameScreen.WIDTH,
+					mountainsHeight));
+
+			Assets.bluePipe = graphics.newImage("blue-pipe.png",
+					ImageFormat.RGB565);
+
+			Assets.tileDirt = graphics.newImage("tile-dirt.png",
+					ImageFormat.RGB565);
+
+			Assets.character = graphics.newImage("character.png",
+					ImageFormat.RGB565);
+
 			Assets.gameOver = graphics.newImage("game-over.png",
 					ImageFormat.RGB565);
-			
-			Assets.coin = graphics.newImage("coin.png",
-					ImageFormat.RGB565);
-	
+
+			Assets.coin = graphics.newImage("coin.png", ImageFormat.RGB565);
+			Assets.debugButton = graphics.newImage("debug.png", ImageFormat.RGB565);
+
 			Assets.click = game.getAudio().createSound("explode.ogg");
+			
 		}
+		AndroidImage debugButtonImage = (AndroidImage)Assets.debugButton;
+		debugButton = new MenuItem(debugButtonImage, 10, 10);
+		entities.add(debugButton);
+		mountainsY = GameScreen.HEIGHT - mountainsHeight - Floor.HEIGHT;
 	}
 
 	@Override
 	protected void setupEntities() {
+		setupPipes();
 		setupFloor();
 		setupCharacter();
-		setupPipes();
 	}
 
 	Pipe pipe1, pipe2;
@@ -130,6 +151,11 @@ public class GameScreen extends Screen implements Observer {
 
 	@Override
 	public void update(float deltaTime) {
+		this.mountainsX -= mountainsSpeed * deltaTime;
+		if (mountainsX <= -GameScreen.WIDTH) {
+			this.mountainsX = 0;
+		}
+
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
 		// We have four separate update methods in this example.
@@ -167,6 +193,9 @@ public class GameScreen extends Screen implements Observer {
 			TouchEvent event = touchEvents.get(i);
 
 			if (event.type == TouchEvent.TOUCH_DOWN) {
+                if (debugButton.collides(new Point(event.x, event.y))) {
+                	SampleGame.debugMode = SampleGame.debugMode == SampleGame.DebugMode.OFF ? SampleGame.DebugMode.FILL:SampleGame.DebugMode.OFF;
+                }
 				character.jump();
 			}
 		}
@@ -188,44 +217,47 @@ public class GameScreen extends Screen implements Observer {
 		}
 	}
 
-	protected void collisionDetected(AndroidEntity entity, Rectangle[] collisionRectangles) {
+	protected void collisionDetected(AndroidEntity entity,
+			Rectangle[] collisionRectangles) {
 		livesLeft--;
-		if(collisionRectangles == null || collisionRectangles.length <= 1 || collisionRectangles.length > 2){
+		if (collisionRectangles == null || collisionRectangles.length <= 1
+				|| collisionRectangles.length > 2) {
 			return;
 		}
-		CollisionSpot collisionSpot = Rectangle.getCollisionSpot(collisionRectangles[0], collisionRectangles[1]);
+		CollisionSpot collisionSpot = Rectangle.getCollisionSpot(
+				collisionRectangles[0], collisionRectangles[1]);
 		System.out.println(collisionSpot);
 		switch (collisionSpot) {
-			case LEFT:
-				character.setX(entity.getX() - character.getWidth());
-				break;
-			case RIGHT:
-				character.setX(entity.getX() + entity.getWidth() );
-				break;
-			case TOP:
-				character.setY(entity.getY() - character.getHeight());
-				break;
-			case BOTTOM:
-				character.setY(entity.getY() + entity.getHeight());
-				break;
-			case UPPER_LEFT:
-				character.setX(entity.getX() - character.getWidth());
-				character.setY(entity.getY() - character.getHeight());
-				break;
-			case BOTTOM_LEFT:
-				character.setY(entity.getY() + entity.getHeight());
-				character.setX(entity.getX() - character.getWidth());
-				break;
-			case UPPER_RIGHT:
-				character.setY(entity.getY() - character.getHeight());
-				character.setX(entity.getX() + entity.getWidth() );
-				break;
-			case BOTTOM_RIGHT:
-				character.setY(entity.getY() + entity.getHeight());
-				character.setX(entity.getX() + entity.getWidth() );
-				break;
-			default:
-				break;
+		case LEFT:
+			character.setX(entity.getX() - character.getWidth());
+			break;
+		case RIGHT:
+			character.setX(entity.getX() + entity.getWidth());
+			break;
+		case TOP:
+			character.setY(entity.getY() - character.getHeight());
+			break;
+		case BOTTOM:
+			character.setY(entity.getY() + entity.getHeight());
+			break;
+		case UPPER_LEFT:
+			character.setX(entity.getX() - character.getWidth());
+			character.setY(entity.getY() - character.getHeight());
+			break;
+		case BOTTOM_LEFT:
+			character.setY(entity.getY() + entity.getHeight());
+			character.setX(entity.getX() - character.getWidth());
+			break;
+		case UPPER_RIGHT:
+			character.setY(entity.getY() - character.getHeight());
+			character.setX(entity.getX() + entity.getWidth());
+			break;
+		case BOTTOM_RIGHT:
+			character.setY(entity.getY() + entity.getHeight());
+			character.setX(entity.getX() + entity.getWidth());
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -263,12 +295,12 @@ public class GameScreen extends Screen implements Observer {
 			collisionDetected(pipe2);
 			return;
 		}
-		if(pipe1.getCoin().isVisible() && character.collides(pipe1.getCoin())){
+		if (pipe1.getCoin().isVisible() && character.collides(pipe1.getCoin())) {
 			pipe1.getCoin().setVisible(false);
 			scored();
 			return;
 		}
-		if(pipe2.getCoin().isVisible() && character.collides(pipe2.getCoin())){
+		if (pipe2.getCoin().isVisible() && character.collides(pipe2.getCoin())) {
 			pipe2.getCoin().setVisible(false);
 			scored();
 			return;
@@ -303,7 +335,9 @@ public class GameScreen extends Screen implements Observer {
 		// First draw the game elements.
 		// Example:
 		g.drawImage(Assets.background, 0, 0);
-		// g.drawImage(Assets.character, characterX, characterY);
+
+		g.drawImage(Assets.mountains, mountainsX, mountainsY);
+		g.drawImage(Assets.mountains, mountainsX + GameScreen.WIDTH, mountainsY);
 
 		// Secondly, draw the UI above the game elements.
 		if (state == GameState.Ready) {
@@ -315,9 +349,9 @@ public class GameScreen extends Screen implements Observer {
 		if (state == GameState.Paused) {
 			drawPausedUI();
 		}
-//		if (state == GameState.GameOver) {
-//			drawGameOverUI();
-//		}
+		// if (state == GameState.GameOver) {
+		// drawGameOverUI();
+		// }
 
 	}
 
@@ -370,10 +404,10 @@ public class GameScreen extends Screen implements Observer {
 
 	private void drawGameOverUI() {
 		Graphics g = game.getGraphics();
-        g.fillRect(0, 0, g.getWidth(), g.getHeight(), Color.BLACK);
-        int offsetX = 800/2 - Assets.gameOver.getWidth()/2;
-        int offsetY = 1200/2 - Assets.gameOver.getHeight()/2;
-        g.drawImage(Assets.gameOver, offsetX, offsetY);
+		g.fillRect(0, 0, g.getWidth(), g.getHeight(), Color.BLACK);
+		int offsetX = 800 / 2 - Assets.gameOver.getWidth() / 2;
+		int offsetY = 1200 / 2 - Assets.gameOver.getHeight() / 2;
+		g.drawImage(Assets.gameOver, offsetX, offsetY);
 	}
 
 	@Override
@@ -400,18 +434,20 @@ public class GameScreen extends Screen implements Observer {
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		throw new UnsupportedOperationException("Observable might going to be removed.");
-//		if (observable instanceof Pipe) {
-//			// Pipe pipe = (Pipe) observable;
-//			// pipe.deleteObservers();
-//			// this.entities.remove(pipe);
-//			scored();
-//		} else if (observable instanceof GameCharacter) {
-//			// user hit something
-//			livesLeft--;
-//		}
+		throw new UnsupportedOperationException(
+				"Observable might going to be removed.");
+		// if (observable instanceof Pipe) {
+		// // Pipe pipe = (Pipe) observable;
+		// // pipe.deleteObservers();
+		// // this.entities.remove(pipe);
+		// scored();
+		// } else if (observable instanceof GameCharacter) {
+		// // user hit something
+		// livesLeft--;
+		// }
 	}
-	private void scored(){
+
+	private void scored() {
 		score++;
 		if (score > GameScreen.HIGH_SCORE) {
 			GameScreen.HIGH_SCORE = score;
