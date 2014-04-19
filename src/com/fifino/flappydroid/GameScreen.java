@@ -1,5 +1,8 @@
-package com.kilobolt.samplegame;
+package com.fifino.flappydroid;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -12,6 +15,7 @@ import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.os.Environment;
 
 import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.Entity;
@@ -50,12 +54,16 @@ public class GameScreen extends Screen implements Observer {
 	ArrayList<Entity> entities;
 	GameCharacter character;
 	private Floor floor;
+	AndroidImage skyImage;
+	int skySpeed = 1;
+	int skyX = 0;
+	int skyY = 0;
 	AndroidImage mountainsImage;
 	int mountainsSpeed = 3;
 	int mountainsX = 0;
 	int mountainsY;
 	int mountainsHeight = 400;
-    private MenuItem debugButton;
+	private MenuItem debugButton;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -82,6 +90,9 @@ public class GameScreen extends Screen implements Observer {
 			Graphics graphics = game.getGraphics();
 			Assets.background = graphics.newImage("bg-vertical.png",
 					ImageFormat.RGB565);
+			skyImage = (AndroidImage) Assets.background;
+			skyImage.setBitmap(BitmapTransform.scale(skyImage.getBitmap(),
+					GameScreen.WIDTH, GameScreen.HEIGHT));
 			Assets.mountains = graphics.newImage("mountains.png",
 					ImageFormat.RGB565);
 			mountainsImage = (AndroidImage) Assets.mountains;
@@ -102,14 +113,15 @@ public class GameScreen extends Screen implements Observer {
 					ImageFormat.RGB565);
 
 			Assets.coin = graphics.newImage("coin.png", ImageFormat.RGB565);
-			Assets.debugButton = graphics.newImage("debug.png", ImageFormat.RGB565);
+			Assets.debugButton = graphics.newImage("debug.png",
+					ImageFormat.RGB565);
 
 			Assets.jumpSound = game.getAudio().createSound("jump.wav");
 			Assets.hitSound = game.getAudio().createSound("hit.wav");
 			Assets.coinSound = game.getAudio().createSound("coin.wav");
 			Assets.tenCoinsSound = game.getAudio().createSound("10-coins.wav");
 		}
-		AndroidImage debugButtonImage = (AndroidImage)Assets.debugButton;
+		AndroidImage debugButtonImage = (AndroidImage) Assets.debugButton;
 		debugButton = new MenuItem(debugButtonImage, 10, 10);
 		entities.add(debugButton);
 		mountainsY = GameScreen.HEIGHT - mountainsHeight - Floor.HEIGHT;
@@ -153,6 +165,10 @@ public class GameScreen extends Screen implements Observer {
 
 	@Override
 	public void update(float deltaTime) {
+		this.skyX -= skySpeed * deltaTime;
+		if (skyX <= -GameScreen.WIDTH) {
+			this.skyX = 0;
+		}
 		this.mountainsX -= mountainsSpeed * deltaTime;
 		if (mountainsX <= -GameScreen.WIDTH) {
 			this.mountainsX = 0;
@@ -182,10 +198,10 @@ public class GameScreen extends Screen implements Observer {
 		// state now becomes GameState.Running.
 		// Now the updateRunning() method will be called!
 
-//		if (touchEvents.size() > 0) {
-//			Assets.click.play();
-//			state = GameState.Running;
-//		}
+		// if (touchEvents.size() > 0) {
+		// Assets.click.play();
+		// state = GameState.Running;
+		// }
 	}
 
 	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
@@ -195,9 +211,10 @@ public class GameScreen extends Screen implements Observer {
 			TouchEvent event = touchEvents.get(i);
 
 			if (event.type == TouchEvent.TOUCH_DOWN) {
-                if (debugButton.collides(new Point(event.x, event.y))) {
-                	SampleGame.debugMode = SampleGame.debugMode == SampleGame.DebugMode.OFF ? SampleGame.DebugMode.FILL:SampleGame.DebugMode.OFF;
-                }
+				if (debugButton.collides(new Point(event.x, event.y))) {
+					FlappyDroidGame.debugMode = FlappyDroidGame.debugMode == FlappyDroidGame.DebugMode.OFF ? FlappyDroidGame.DebugMode.FILL
+							: FlappyDroidGame.DebugMode.OFF;
+				}
 				character.jump();
 				Assets.jumpSound.play();
 			}
@@ -329,7 +346,24 @@ public class GameScreen extends Screen implements Observer {
 			e.printStackTrace();
 		}
 		nullify();
+		saveHighScore();
 		game.setScreen(new MainMenuScreen(game));
+	}
+
+	private void saveHighScore() {
+		try {
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/flappy-droid");
+			File file = new File(dir, "flappy-droid");
+			FileOutputStream f = new FileOutputStream(file);
+			String highScoreString = "" + GameScreen.HIGH_SCORE;
+			byte[] contentInBytes = highScoreString.getBytes();
+			f.write(contentInBytes);
+			f.close();
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
@@ -338,7 +372,12 @@ public class GameScreen extends Screen implements Observer {
 
 		// First draw the game elements.
 		// Example:
-		g.drawImage(Assets.background, 0, 0);
+		// g.drawImage(Assets.background, 0, 0);
+		g.drawImage(Assets.background, skyX, skyY);
+		g.drawImage(Assets.background, skyX + GameScreen.WIDTH, skyY);
+
+		g.drawImage(Assets.mountains, mountainsX, mountainsY);
+		g.drawImage(Assets.mountains, mountainsX + GameScreen.WIDTH, mountainsY);
 
 		g.drawImage(Assets.mountains, mountainsX, mountainsY);
 		g.drawImage(Assets.mountains, mountainsX + GameScreen.WIDTH, mountainsY);
@@ -453,9 +492,9 @@ public class GameScreen extends Screen implements Observer {
 
 	private void scored() {
 		score++;
-		if(score%10 == 0){
+		if (score % 10 == 0) {
 			Assets.tenCoinsSound.play();
-		}else{
+		} else {
 			Assets.coinSound.play();
 		}
 		if (score > GameScreen.HIGH_SCORE) {

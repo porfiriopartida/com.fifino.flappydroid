@@ -6,14 +6,14 @@ import java.util.Random;
 
 import android.graphics.Bitmap;
 
+import com.fifino.flappydroid.Assets;
+import com.fifino.flappydroid.GameScreen;
 import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
-import com.kilobolt.samplegame.Assets;
-import com.kilobolt.samplegame.GameScreen;
 
 public class Pipe extends AndroidEntity {
 

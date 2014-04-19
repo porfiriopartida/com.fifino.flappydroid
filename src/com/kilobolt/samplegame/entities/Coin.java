@@ -2,11 +2,11 @@ package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
 
+import com.fifino.flappydroid.Assets;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
 import com.kilobolt.framework.implementation.AndroidImage;
-import com.kilobolt.samplegame.Assets;
 
 public class Coin extends AndroidEntity {
 	int width = 100, height = 110;

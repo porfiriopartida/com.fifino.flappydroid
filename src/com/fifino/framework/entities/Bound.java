@@ -2,10 +2,12 @@ package com.fifino.framework.entities;
 
 import java.util.List;
 import java.util.Random;
+
 import android.graphics.Color;
 import android.graphics.Point;
+
+import com.fifino.flappydroid.FlappyDroidGame;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.samplegame.SampleGame;
 
 public class Bound {
     private int x;
@@ -102,10 +104,10 @@ public class Bound {
     }
     public void draw(Graphics g) {
         for (Rectangle r : rectangles) {
-			 if (SampleGame.debugMode == SampleGame.DebugMode.FILL) {
+			 if (FlappyDroidGame.debugMode == FlappyDroidGame.DebugMode.FILL) {
 		            g.fillRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
 		                    r.getHeight(), getColor());
-			 }else if(SampleGame.debugMode == SampleGame.DebugMode.DRAW){
+			 }else if(FlappyDroidGame.debugMode == FlappyDroidGame.DebugMode.DRAW){
 		            g.drawRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
 		                    r.getHeight(), getColor());
 			 }

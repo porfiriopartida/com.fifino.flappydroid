@@ -1,10 +1,12 @@
-package com.kilobolt.samplegame;
+package com.fifino.flappydroid;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import com.fifino.framework.Entity;
 import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;

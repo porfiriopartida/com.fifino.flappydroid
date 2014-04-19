@@ -1,6 +1,8 @@
 package com.kilobolt.samplegame.entities;
 
 import java.util.ArrayList;
+
+import com.fifino.flappydroid.Assets;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.implementation.AndroidEntity;
@@ -8,7 +10,6 @@ import com.fifino.framework.physics.Mechanics;
 import com.fifino.framework.tools.Time;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
-import com.kilobolt.samplegame.Assets;
 
 public class GameCharacter extends AndroidEntity {
 

@@ -1,4 +1,4 @@
-package com.kilobolt.samplegame;
+package com.fifino.flappydroid;
 
 import java.util.List;
 

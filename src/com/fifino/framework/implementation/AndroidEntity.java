@@ -2,13 +2,15 @@ package com.fifino.framework.implementation;
 
 import java.util.List;
 import java.util.Observable;
+
 import android.graphics.Point;
+
+import com.fifino.flappydroid.FlappyDroidGame;
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Bound;
 import com.fifino.framework.entities.Rectangle;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.implementation.AndroidImage;
-import com.kilobolt.samplegame.SampleGame;
 
 public abstract class AndroidEntity extends Observable implements Entity {
     private boolean isVisible = true;
@@ -79,7 +81,7 @@ public abstract class AndroidEntity extends Observable implements Entity {
 	}
 
 	public void drawBounds(Graphics g) {
-		if (SampleGame.debugMode != SampleGame.DebugMode.OFF) {
+		if (FlappyDroidGame.debugMode != FlappyDroidGame.DebugMode.OFF) {
 			 this.getBound().draw(g);
 		}
 	}
