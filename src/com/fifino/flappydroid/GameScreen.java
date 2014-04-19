@@ -11,12 +11,19 @@ import java.util.Random;
 
 
 
+
+
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Environment;
 
+import com.fifino.flappydroid.entities.Coin;
+import com.fifino.flappydroid.entities.Floor;
+import com.fifino.flappydroid.entities.GameCharacter;
+import com.fifino.flappydroid.entities.MenuItem;
+import com.fifino.flappydroid.entities.Pipe;
 import com.fifino.framework.BitmapTransform;
 import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Rectangle;
@@ -28,11 +35,6 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
-import com.kilobolt.samplegame.entities.Coin;
-import com.kilobolt.samplegame.entities.Floor;
-import com.kilobolt.samplegame.entities.GameCharacter;
-import com.kilobolt.samplegame.entities.MenuItem;
-import com.kilobolt.samplegame.entities.Pipe;
 
 public class GameScreen extends Screen implements Observer {
 	enum GameState {

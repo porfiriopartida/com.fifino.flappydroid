@@ -1,4 +1,4 @@
-package com.kilobolt.samplegame.entities;
+package com.fifino.flappydroid.entities;
 
 import java.util.ArrayList;
 
