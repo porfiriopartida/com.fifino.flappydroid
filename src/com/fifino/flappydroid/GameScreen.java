@@ -9,10 +9,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
-
-
-
-
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -44,7 +40,6 @@ public class GameScreen extends Screen implements Observer {
 	public static int HEIGHT = 1280;
 	public static int WIDTH = 800;
 
-	public static int HIGH_SCORE = 0;
 	// GameState state = GameState.Ready;
 	GameState state = GameState.Running;
 	// Variable Setup
@@ -348,24 +343,8 @@ public class GameScreen extends Screen implements Observer {
 			e.printStackTrace();
 		}
 		nullify();
-		saveHighScore();
+		FlappyDroidGame.saveHighScore();
 		game.setScreen(new MainMenuScreen(game));
-	}
-
-	private void saveHighScore() {
-		try {
-			File sdCard = Environment.getExternalStorageDirectory();
-			File dir = new File(sdCard.getAbsolutePath() + "/flappy-droid");
-			File file = new File(dir, "flappy-droid");
-			FileOutputStream f = new FileOutputStream(file);
-			String highScoreString = "" + GameScreen.HIGH_SCORE;
-			byte[] contentInBytes = highScoreString.getBytes();
-			f.write(contentInBytes);
-			f.close();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
 	}
 
 	@Override
@@ -437,7 +416,7 @@ public class GameScreen extends Screen implements Observer {
 		paint.setAntiAlias(true);
 		paint.setColor(Color.BLACK);
 		g.drawString("Score: " + score, 10, 100, paint);
-		g.drawString("Highest Score: " + GameScreen.HIGH_SCORE, 10, 200, paint);
+		g.drawString("Highest Score: " + FlappyDroidGame.HIGH_SCORE, 10, 200, paint);
 	}
 
 	private void drawPausedUI() {
@@ -499,8 +478,8 @@ public class GameScreen extends Screen implements Observer {
 		} else {
 			Assets.coinSound.play();
 		}
-		if (score > GameScreen.HIGH_SCORE) {
-			GameScreen.HIGH_SCORE = score;
+		if (score > FlappyDroidGame.HIGH_SCORE) {
+			FlappyDroidGame.HIGH_SCORE = score;
 		}
 	}
 }

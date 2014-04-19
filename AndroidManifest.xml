@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" android:description="Using Kilobolt's framework to get involved in graphics basics. Help the droid to get coins passing through pipes and beat your high score !">
+        android:theme="@style/AppTheme" android:description="@string/description">
         <activity
             android:name="com.fifino.flappydroid.FlappyDroidGame"
             android:label="@string/app_name" 

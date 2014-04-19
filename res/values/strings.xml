@@ -3,5 +3,6 @@
 
     <string name="app_name">Flappy Droid</string>
     <string name="action_settings">Settings</string>
+    <string name="description">Using Kilobolt\'s framework to get involved in graphics basics. Help the droid to get coins passing through pipes and beat your high score !</string>
 
 </resources>
