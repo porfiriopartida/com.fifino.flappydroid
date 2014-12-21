@@ -1,19 +1,16 @@
 package com.fifino.flappydroid;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
+
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.os.Environment;
 
 import com.fifino.flappydroid.entities.Coin;
 import com.fifino.flappydroid.entities.Floor;
@@ -25,14 +22,13 @@ import com.fifino.framework.Entity;
 import com.fifino.framework.entities.Rectangle;
 import com.fifino.framework.entities.Rectangle.CollisionSpot;
 import com.fifino.framework.implementation.AndroidEntity;
-import com.kilobolt.framework.implementation.AndroidImage;
-import com.kilobolt.framework.Game;
+import com.gameanalytics.android.GameAnalytics;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
-import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
+import com.kilobolt.framework.implementation.AndroidImage;
 
-public class GameScreen extends Screen implements Observer {
+public class GameScreen extends FlappyDroidScreen implements Observer {
 	enum GameState {
 		Ready, Running, Paused, GameOver
 	};
@@ -62,7 +58,7 @@ public class GameScreen extends Screen implements Observer {
 	int mountainsHeight = 400;
 	private MenuItem debugButton;
 
-	public GameScreen(Game game) {
+	public GameScreen(FlappyDroidGame game) {
 		super(game);
 		GameScreen.HEIGHT = game.getGraphics().getHeight();
 		GameScreen.WIDTH = game.getGraphics().getHeight();
@@ -80,6 +76,7 @@ public class GameScreen extends Screen implements Observer {
 		entities = new ArrayList<Entity>();
 		initializeAssets();
 		setupEntities();
+		game.getClient().send("1 ");
 	}
 
 	protected void initializeAssets() {
@@ -213,6 +210,7 @@ public class GameScreen extends Screen implements Observer {
 							: FlappyDroidGame.DebugMode.OFF;
 				}
 				character.jump();
+				GameAnalytics.newDesignEvent("character.jump", -1, "GameScreen", event.x, event.y, 0);
 				Assets.jumpSound.play();
 			}
 		}
@@ -303,23 +301,27 @@ public class GameScreen extends Screen implements Observer {
 
 		if (character.collides(floor)) {
 			collisionDetected(floor);
+			GameAnalytics.newDesignEvent("character.collides", -1, "floor", character.getX(),  character.getY(), 0);
 			return;
 		}
 		if (character.collides(pipe1)) {
 			collisionDetected(pipe1);
+			GameAnalytics.newDesignEvent("character.collides", -1, "pipe1", character.getX(),  character.getY(), 0);
 			return;
 		}
 		if (character.collides(pipe2)) {
 			collisionDetected(pipe2);
+			GameAnalytics.newDesignEvent("character.collides", -1, "pipe2", character.getX(),  character.getY(), 0);
 			return;
 		}
-		if (pipe1.getCoin().isVisible() && character.collides(pipe1.getCoin())) {
+		Coin c1 = pipe1.getCoin(), c2 = pipe2.getCoin(); 
+		if (c1.isVisible() && character.collides(c1)) {
 			pipe1.getCoin().setVisible(false);
 			scored();
 			return;
 		}
-		if (pipe2.getCoin().isVisible() && character.collides(pipe2.getCoin())) {
-			pipe2.getCoin().setVisible(false);
+		if (c2.isVisible() && character.collides(c2)) {
+			c2.setVisible(false);
 			scored();
 			return;
 		}
@@ -337,13 +339,14 @@ public class GameScreen extends Screen implements Observer {
 
 	private void updateGameOver(List<TouchEvent> touchEvents) {
 		drawGameOverUI();
+//		GameAnalytics.manualBatch();
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		nullify();
-		FlappyDroidGame.saveHighScore();
+		FlappyDroidGame.saveHighScore(game.getClient());
 		game.setScreen(new MainMenuScreen(game));
 	}
 
@@ -475,11 +478,14 @@ public class GameScreen extends Screen implements Observer {
 		score++;
 		if (score % 10 == 0) {
 			Assets.tenCoinsSound.play();
+			GameAnalytics.newDesignEvent("character.scored", 10, "coin", character.getX(),  character.getY(), 0);
 		} else {
 			Assets.coinSound.play();
+			GameAnalytics.newDesignEvent("character.scored", 1, "coin", character.getX(),  character.getY(), 0);
 		}
 		if (score > FlappyDroidGame.HIGH_SCORE) {
 			FlappyDroidGame.HIGH_SCORE = score;
 		}
+
 	}
 }

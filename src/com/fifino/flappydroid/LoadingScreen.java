@@ -1,10 +1,10 @@
 package com.fifino.flappydroid;
 
-import com.kilobolt.framework.Game;
-import com.kilobolt.framework.Screen;
+//import com.kilobolt.framework.Game;
+//import com.kilobolt.framework.Screen;
 
-public class LoadingScreen extends Screen {
-    public LoadingScreen(Game game) {
+public class LoadingScreen extends FlappyDroidScreen {
+    public LoadingScreen(FlappyDroidGame game) {
         super(game);
     }
 

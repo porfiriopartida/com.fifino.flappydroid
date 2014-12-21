@@ -5,5 +5,8 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry exported="true" kind="lib" path="P:/Java/NetbeansProjects/Fifis-Client/dist/Fifis-Client.jar"/>
+	<classpathentry exported="true" kind="lib" path="P:/Java/libs/GA-Android-SDK-master/releases/game-analytics-wrapper-v1.00.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="P:/Java/libs/GA-Android-SDK-master/libs/gson-2.2.2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
