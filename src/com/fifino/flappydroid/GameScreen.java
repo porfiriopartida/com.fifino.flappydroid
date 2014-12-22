@@ -1,8 +1,5 @@
 package com.fifino.flappydroid;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -13,7 +10,6 @@ import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.os.Environment;
 
 import com.fifino.flappydroid.entities.Coin;
 import com.fifino.flappydroid.entities.Floor;
