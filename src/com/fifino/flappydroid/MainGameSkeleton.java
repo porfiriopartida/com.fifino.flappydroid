@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.fifino.framework.Entity;
-import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
 
 public class MainGameSkeleton extends FlappyDroidScreen {
