@@ -1,4 +1,11 @@
 package com.fifino.framework.network;
+
+import java.util.HashMap;
+
+import com.loopj.twicecircled.android.http.AsyncHttpClient;
+import com.loopj.twicecircled.android.http.AsyncHttpResponseHandler;
+import com.loopj.twicecircled.android.http.RequestParams;
+
 //
 //import fifis.network.client.ClientReporter;
 //import fifis.network.client.FifisClient;
@@ -24,33 +31,52 @@ package com.fifino.framework.network;
 ////		send("1");
 //	}
 //}
-public class ClientHandler implements HtmlClient {
+public class ClientHandler implements FifinoHttpClient {
     @Override
-    public String post(String url) {
+    public String post(String host, String url) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
     @Override
-    public String get(String url) {
+    public String get(String host, String url) {
 	// TODO Auto-generated method stub
 	return null;
     }
 
     @Override
-    public String post(String url, String[] args) {
-	// TODO Auto-generated method stub
-	return null;
+    public String post(String host, String url, String[] args) {
+	AsyncHttpClient client = new AsyncHttpClient();
+	HashMap<String, String> map = new HashMap<String, String>();
+        for(int i=0;i<args.length; i++){
+            map.put(args[i], args[++i]);
+        }
+	RequestParams params = new RequestParams(map);
+        client.post(host + url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String res) {
+                System.out.println("RESPONSE: " + res);
+            }
+        });
+        return "";
     }
 
     @Override
-    public String get(String url, String[] args) {
-	// TODO Auto-generated method stub
-	return null;
+    public String get(String host, String url, String[] args) {
+	AsyncHttpClient client = new AsyncHttpClient();
+        client.get(host + url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String res) {
+                System.out.println("RESPONSE: " + res);
+            }
+        });
+        return "";
     }
     public void sendHighscore(int highScore) {
 	// TODO Auto-generated method stub
-	
+	String url = "/com.fifino/flappydroid/highscore.php";
+	String res = this.post("http://192.168.1.67", url, new String[]{ "highscore", ""+highScore });
+	System.out.println("Send highscore: " + res);
     }
 
     public int getHighscore() {
