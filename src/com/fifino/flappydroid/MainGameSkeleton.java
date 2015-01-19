@@ -8,12 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.fifino.framework.Entity;
-import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
-import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
 
-public class MainGameSkeleton extends Screen {
+public class MainGameSkeleton extends FlappyDroidScreen {
 
     enum GameState {
         Ready, Running, Paused, GameOver
@@ -28,7 +26,7 @@ public class MainGameSkeleton extends Screen {
     int livesLeft = 1;
     Paint paint;
 
-    public MainGameSkeleton(Game game) {
+    public MainGameSkeleton(FlappyDroidGame game) {
         super(game);
         // Defining a paint object
         paint = new Paint();

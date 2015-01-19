@@ -6,16 +6,16 @@ import android.graphics.Color;
 import android.graphics.Point;
 
 import com.fifino.flappydroid.entities.MenuItem;
-import com.kilobolt.framework.Game;
+//import com.kilobolt.framework.Game;
 import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
-import com.kilobolt.framework.Screen;
+//import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.Input.TouchEvent;
 import com.kilobolt.framework.implementation.AndroidImage;
 
-public class MainMenuScreen extends Screen {
+public class MainMenuScreen extends FlappyDroidScreen {
     private MenuItem startMenuItem;
-    public MainMenuScreen(Game game) {
+    public MainMenuScreen(FlappyDroidGame game) {
         super(game);
         initializeAssets();
         setupEntities();
@@ -42,6 +42,8 @@ public class MainMenuScreen extends Screen {
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                 if (startMenuItem.collides(new Point(event.x, event.y))) {
+                    //Refresh high scores.
+                    FlappyDroidGame.loadHighScore(game);
                     // START GAME
                     game.setScreen(new GameScreen(game));
                 }

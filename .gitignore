@@ -1,7 +1,9 @@
 *.project
+*.settings
 *.git
 *.*~
 bin
 gen
 project.properties
-
+.classpath
+.settings/*
