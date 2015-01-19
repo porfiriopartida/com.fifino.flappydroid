@@ -104,10 +104,10 @@ public class Bound {
     }
     public void draw(Graphics g) {
         for (Rectangle r : rectangles) {
-			 if (FlappyDroidGame.debugMode == FlappyDroidGame.DebugMode.FILL) {
+			 if (FlappyDroidGame.DEBUG_MODE == FlappyDroidGame.DebugMode.FILL) {
 		            g.fillRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
 		                    r.getHeight(), getColor());
-			 }else if(FlappyDroidGame.debugMode == FlappyDroidGame.DebugMode.DRAW){
+			 }else if(FlappyDroidGame.DEBUG_MODE == FlappyDroidGame.DebugMode.DRAW){
 		            g.drawRect(r.getAbsoluteX(), r.getAbsoluteY(), r.getWidth(),
 		                    r.getHeight(), getColor());
 			 }

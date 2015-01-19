@@ -42,6 +42,8 @@ public class MainMenuScreen extends FlappyDroidScreen {
             TouchEvent event = touchEvents.get(i);
             if (event.type == TouchEvent.TOUCH_UP) {
                 if (startMenuItem.collides(new Point(event.x, event.y))) {
+                    //Refresh high scores.
+                    FlappyDroidGame.loadHighScore(game);
                     // START GAME
                     game.setScreen(new GameScreen(game));
                 }

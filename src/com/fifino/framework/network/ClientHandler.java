@@ -2,6 +2,9 @@ package com.fifino.framework.network;
 
 import java.util.HashMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.loopj.twicecircled.android.http.AsyncHttpClient;
 import com.loopj.twicecircled.android.http.AsyncHttpResponseHandler;
 import com.loopj.twicecircled.android.http.RequestParams;
@@ -32,56 +35,85 @@ import com.loopj.twicecircled.android.http.RequestParams;
 //	}
 //}
 public class ClientHandler implements FifinoHttpClient {
+    String jsonResponse = "_";
+
     @Override
     public String post(String host, String url) {
-	// TODO Auto-generated method stub
-	return null;
+        return this.post(host, url, new String[0]);
     }
 
     @Override
-    public String get(String host, String url) {
-	// TODO Auto-generated method stub
-	return null;
+    public String get(final String host, final String url) {
+        return this.get(host, url, new String[0]);
     }
 
     @Override
-    public String post(String host, String url, String[] args) {
-	AsyncHttpClient client = new AsyncHttpClient();
-	HashMap<String, String> map = new HashMap<String, String>();
-        for(int i=0;i<args.length; i++){
-            map.put(args[i], args[++i]);
+    public String post(final String host, final String url, final String[] args) {
+        this.jsonResponse = "_";
+        new Thread() {
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                for (int i = 0; i < args.length; i++) {
+                    map.put(args[i], args[++i]);
+                }
+                RequestParams params = new RequestParams(map);
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.post(host + url, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(String res) {
+                        jsonResponse = res;
+                    }
+                });
+            }
+        }.start();
+        while ("_".equals(jsonResponse)) {
+            // Just stick here until the score is set.
         }
-	RequestParams params = new RequestParams(map);
-        client.post(host + url, params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(String res) {
-                System.out.println("RESPONSE: " + res);
-            }
-        });
-        return "";
+        return jsonResponse;
     }
 
     @Override
-    public String get(String host, String url, String[] args) {
-	AsyncHttpClient client = new AsyncHttpClient();
-        client.get(host + url, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(String res) {
-                System.out.println("RESPONSE: " + res);
+    public String get(final String host, final String url, final String[] args) {
+        this.jsonResponse = "_";
+        new Thread() {
+            public void run() {
+                HashMap<String, String> map = new HashMap<String, String>();
+                for (int i = 0; i < args.length; i++) {
+                    map.put(args[i], args[++i]);
+                }
+                RequestParams params = new RequestParams(map);
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.get(host + url, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(String res) {
+                        jsonResponse = res;
+                    }
+                });
             }
-        });
-        return "";
+        }.start();
+        while ("_".equals(jsonResponse)) {
+            // Just stick here until the score is set.
+        }
+        return jsonResponse;
     }
+
     public void sendHighscore(int highScore) {
-	// TODO Auto-generated method stub
-	String url = "/com.fifino/flappydroid/highscore.php";
-	String res = this.post("http://192.168.1.67", url, new String[]{ "highscore", ""+highScore });
-	System.out.println("Send highscore: " + res);
+        String url = "/com.fifino/flappydroid/highscore.php";
+        this.post("http://porfiriopartida.com", url, new String[]{
+                "highscore", "" + highScore});
     }
 
     public int getHighscore() {
-	// TODO Auto-generated method stub
-	return 0;
+        try {
+            final String url = "/com.fifino/flappydroid/highscore.php";
+            String res = get("http://porfiriopartida.com", url);
+            JSONObject obj = new JSONObject(res);
+            int highscore = obj.getInt("highscore");
+            return highscore;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
-} 
+}

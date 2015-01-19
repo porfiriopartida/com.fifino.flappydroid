@@ -81,7 +81,7 @@ public abstract class AndroidEntity extends Observable implements Entity {
 	}
 
 	public void drawBounds(Graphics g) {
-		if (FlappyDroidGame.debugMode != FlappyDroidGame.DebugMode.OFF) {
+		if (FlappyDroidGame.DEBUG_MODE != FlappyDroidGame.DebugMode.OFF) {
 			 this.getBound().draw(g);
 		}
 	}
