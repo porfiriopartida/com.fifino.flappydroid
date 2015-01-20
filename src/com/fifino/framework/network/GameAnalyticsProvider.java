@@ -88,10 +88,12 @@ public class GameAnalyticsProvider implements AnalyticsProvider {
 	    e.printStackTrace();
 	}
     }
+    @SuppressWarnings("deprecation")
     @Override
     public void exception(Exception ex, String caller) {
 	GameAnalytics.newQualityEvent("Exception:"+caller+":"+ex.getMessage(),ex.getLocalizedMessage());
     }
+    @SuppressWarnings("deprecation")
     @Override
     public void error(String error, JSONObject track) {
 	try {

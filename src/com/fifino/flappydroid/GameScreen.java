@@ -10,7 +10,6 @@ import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 //import java.util.Vector;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -29,6 +28,7 @@ import com.kilobolt.framework.Graphics;
 import com.kilobolt.framework.Graphics.ImageFormat;
 import com.kilobolt.framework.Input.TouchEvent;
 import com.kilobolt.framework.implementation.AndroidImage;
+//import java.io.FileInputStream;
 
 public class GameScreen extends FlappyDroidScreen implements Observer {
     enum GameState {
@@ -60,7 +60,7 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
     int mountainsHeight = 400;
     // private MenuItem debugButton;
 
-    public GameScreen(FlappyDroidGame game) {
+    public GameScreen(FlappyDroidGame game)  {
         super(game);
         GameScreen.HEIGHT = game.getGraphics().getHeight();
         GameScreen.WIDTH = game.getGraphics().getHeight();
@@ -79,7 +79,23 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         initializeAssets();
         setupEntities();
     }
-
+    private String getPipePicture(){
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH);
+        String character;
+        switch(month){
+//            case 0:
+//                character = "january_pipe.png";
+//                break;
+            case 1:
+                character = "february_pipe.png";
+                break;
+            default:
+                character = "default_pipe.png";
+                break;
+        }
+        return character;
+    }
     private String getCharacterPicture(){
         Calendar c = Calendar.getInstance();
         int month = c.get(Calendar.MONTH);
@@ -87,6 +103,9 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         switch(month){
             case 0:
                 character = "january_character.png";
+                break;
+            case 1:
+                character = "february_character.png";
                 break;
             default:
                 character = "default_character.png";
@@ -101,6 +120,9 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         switch(month){
             case 0:
                 character = "january_coin.png";
+                break;
+            case 1:
+                character = "february_coin.png";
                 break;
             default:
                 character = "default_coin.png";
@@ -123,7 +145,7 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
                     mountainsImage.getBitmap(), GameScreen.WIDTH,
                     mountainsHeight));
 
-            Assets.bluePipe = graphics.newImage("blue-pipe.png",
+            Assets.bluePipe = graphics.newImage(this.getPipePicture(),
                     ImageFormat.RGB565);
 
             Assets.tileDirt = graphics.newImage("tile-dirt.png",
@@ -543,8 +565,8 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
             game.getAnalyticsProvider().track("Scored", obj, 1,
                     character.getX(), character.getY(), 0);
         }
-//        if (score > FlappyDroidGame.HIGH_SCORE) {
-//            FlappyDroidGame.HIGH_SCORE = score;
-//        }
+        if (score > FlappyDroidGame.HIGH_SCORE) {
+            FlappyDroidGame.HIGH_SCORE = score;
+        }
     }
 }

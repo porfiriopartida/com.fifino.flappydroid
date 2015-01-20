@@ -10,11 +10,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
+//import android.provider.MediaStore.Files;
 
 import com.fifino.framework.network.AnalyticsProvider;
 import com.fifino.framework.network.ClientHandler;
 import com.fifino.framework.network.DebugAnalyticsProvider;
-import com.fifino.framework.network.GameAnalyticsProvider;
+import com.fifino.framework.network.NullAnalyticsProvider;
 import com.kilobolt.framework.Screen;
 import com.kilobolt.framework.implementation.AndroidGame;
 
@@ -51,7 +52,7 @@ public class FlappyDroidGame extends AndroidGame {
         try {
             clientHandler = new ClientHandler();
             ANALYTICS_PROVIDER = FlappyDroidGame.ENVIRONMENT == Env.PROD
-                    ? new GameAnalyticsProvider()
+                    ? new NullAnalyticsProvider()
                     : new DebugAnalyticsProvider();
             // clientHandler.start();
             FlappyDroidGame.IS_SD_PRESENT = android.os.Environment
@@ -111,36 +112,41 @@ public class FlappyDroidGame extends AndroidGame {
                     "load_highscore:server");
         }
 
-        FileInputStream fis;
+        FileInputStream fis = null;
+        File file;
         try {
             if (FlappyDroidGame.IS_SD_PRESENT) {
                 File sdCard = Environment.getExternalStorageDirectory();
                 File dir = new File(sdCard.getAbsolutePath()
                         + FlappyDroidGame.APP_DIR);
-                // if(dir.exists()){
-                // File files[] = dir.listFiles();
-                // for(File file : files){
-                // file.delete();
-                // }
-                // dir.delete();
-                // }
-                File file = new File(dir, FlappyDroidGame.HIGHSCORE_FILE);
+                file = new File(dir, FlappyDroidGame.HIGHSCORE_FILE);
                 if (file.exists()) {
                     fis = new FileInputStream(file);
-                    StringBuilder builder = new StringBuilder();
-                    int ch;
-                    while ((ch = fis.read()) != -1) {
-                        builder.append((char) ch);
-                    }
-                    String highScoreString = builder.toString();
-                    fis.close();
-                    FlappyDroidGame.HIGH_SCORE = Integer
-                            .parseInt(highScoreString);
                 } else {
                     dir.mkdir();
                     file.createNewFile();
                 }
+            }else{
+                String internalFile = game.getFilesDir().toString() + File.separator + FlappyDroidGame.HIGHSCORE_FILE;
+                file = new File(internalFile);
+                if (file.exists()) {
+                    fis = game.openFileInput(FlappyDroidGame.HIGHSCORE_FILE);
+                } else {
+                    FileOutputStream outputStream = game.openFileOutput(FlappyDroidGame.HIGHSCORE_FILE, Context.MODE_PRIVATE);
+                    outputStream.write("0".getBytes());
+                    outputStream.close();
+                    fis = game.openFileInput(internalFile);
+                }
             }
+            StringBuilder builder = new StringBuilder();
+            int ch;
+            while ((ch = fis.read()) != -1) {
+                builder.append((char) ch);
+            }
+            String highScoreString = builder.toString();
+            fis.close();
+            FlappyDroidGame.HIGH_SCORE = Integer
+                    .parseInt(highScoreString);
         } catch (IOException ex) {
             // Error loading the file.
             FlappyDroidGame.ANALYTICS_PROVIDER.exception(ex,
@@ -164,6 +170,16 @@ public class FlappyDroidGame extends AndroidGame {
                 byte[] contentInBytes = highScoreString.getBytes();
                 f.write(contentInBytes);
                 f.close();
+            }else{
+                FileOutputStream outputStream = null;
+                try {
+                    String internalFile = FlappyDroidGame.HIGHSCORE_FILE; //game.getFilesDir().toString() + File.separator + FlappyDroidGame.HIGHSCORE_FILE;
+                    outputStream = game.openFileOutput(internalFile, Context.MODE_PRIVATE);
+                    outputStream.write(highScoreString.getBytes());
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
