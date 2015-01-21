@@ -40,6 +40,8 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
 
     // GameState state = GameState.Ready;
     GameState state = GameState.Running;
+    boolean gameOverPause = false;
+    int initialY = 90;
     // Variable Setup
     // You would create game objects here.
     Random rnd;
@@ -60,7 +62,7 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
     int mountainsHeight = 400;
     // private MenuItem debugButton;
 
-    public GameScreen(FlappyDroidGame game)  {
+    public GameScreen(FlappyDroidGame game) {
         super(game);
         GameScreen.HEIGHT = game.getGraphics().getHeight();
         GameScreen.WIDTH = game.getGraphics().getHeight();
@@ -79,52 +81,52 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         initializeAssets();
         setupEntities();
     }
-    private String getPipePicture(){
+    private String getPipePicture() {
         Calendar c = Calendar.getInstance();
         int month = c.get(Calendar.MONTH);
         String character;
-        switch(month){
-//            case 0:
-//                character = "january_pipe.png";
-//                break;
-            case 1:
+        switch (month) {
+        // case 0:
+        // character = "january_pipe.png";
+        // break;
+            case 1 :
                 character = "february_pipe.png";
                 break;
-            default:
+            default :
                 character = "default_pipe.png";
                 break;
         }
         return character;
     }
-    private String getCharacterPicture(){
+    private String getCharacterPicture() {
         Calendar c = Calendar.getInstance();
         int month = c.get(Calendar.MONTH);
         String character;
-        switch(month){
-            case 0:
+        switch (month) {
+            case 0 :
                 character = "january_character.png";
                 break;
-            case 1:
+            case 1 :
                 character = "february_character.png";
                 break;
-            default:
+            default :
                 character = "default_character.png";
                 break;
         }
         return character;
     }
-    private String getCoinPicture(){
+    private String getCoinPicture() {
         Calendar c = Calendar.getInstance();
         int month = c.get(Calendar.MONTH);
         String character;
-        switch(month){
-            case 0:
+        switch (month) {
+            case 0 :
                 character = "january_coin.png";
                 break;
-            case 1:
+            case 1 :
                 character = "february_coin.png";
                 break;
-            default:
+            default :
                 character = "default_coin.png";
                 break;
         }
@@ -157,7 +159,8 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
             Assets.gameOver = graphics.newImage("game-over.png",
                     ImageFormat.RGB565);
 
-            Assets.coin = graphics.newImage(this.getCoinPicture(), ImageFormat.RGB565);
+            Assets.coin = graphics.newImage(this.getCoinPicture(),
+                    ImageFormat.RGB565);
             Assets.debugButton = graphics.newImage("debug.png",
                     ImageFormat.RGB565);
 
@@ -229,14 +232,15 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         // Refer to Unit 3's code. We did a similar thing without separating the
         // update methods.
 
-        if (state == GameState.Ready)
+        if (state == GameState.Ready) {
             updateReady(touchEvents);
-        if (state == GameState.Running)
+        } else if (state == GameState.Running) {
             updateRunning(touchEvents, deltaTime);
-        if (state == GameState.Paused)
+        } else if (state == GameState.Paused) {
             updatePaused(touchEvents);
-        if (state == GameState.GameOver)
-            updateGameOver(touchEvents);
+        } else if (state == GameState.GameOver) {
+            updateGameOver(touchEvents, deltaTime);
+        }
     }
 
     private void updateReady(List<TouchEvent> touchEvents) {
@@ -278,6 +282,7 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
             }
             // 2. Check miscellaneous events like death:
             if (livesLeft == 0) {
+                gameOverPause = true;
                 state = GameState.GameOver;
             }
 
@@ -400,16 +405,33 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         }
     }
 
-    private void updateGameOver(List<TouchEvent> touchEvents) {
-        drawGameOverUI();
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private void updateGameOver(List<TouchEvent> touchEvents, float deltaTime) {
+        if (gameOverPause) {
+            final GameScreen that = this;
+            new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(1500);
+                        gameOverPause = false;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         }
-        nullify();
-        FlappyDroidGame.saveHighScore(game);
-        game.setScreen(new MainMenuScreen(game));
+        int len = touchEvents.size();
+        try {
+            for (int i = 0; i < len && !gameOverPause; i++) {
+                TouchEvent event = touchEvents.get(i);
+                if (event.type == TouchEvent.TOUCH_DOWN) {
+                    nullify();
+                    FlappyDroidGame.saveHighScore(game);
+                    game.setScreen(new MainMenuScreen(game));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("input read error");
+        }
     }
 
     @Override
@@ -438,9 +460,10 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
         if (state == GameState.Paused) {
             drawPausedUI();
         }
-        // if (state == GameState.GameOver) {
-        // drawGameOverUI();
-        // }
+        if (state == GameState.GameOver) {
+            drawGameOverUI();
+            // drawRunningUI();
+        }
 
     }
 
@@ -468,30 +491,12 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
     }
 
     private void drawRunningUI() {
-        int textX = 10, textY = 50, step = 50;
         Graphics g = game.getGraphics();
         // Vector<Entity> entities = (Vector<Entity>) this.entities.clone();
         for (Entity entity : entities) {
             entity.draw(g);
         }
-        // Defining a paint object
-        Paint paint = new Paint();
-        paint.setTextSize(40);
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.BLACK);
-        
-        g.drawString("Score: " + score, textX, textY, paint);
-        if (FlappyDroidGame.HIGH_SCORE > 0) {
-            textY += step;
-            g.drawString("High Score: " + FlappyDroidGame.HIGH_SCORE, textX, textY,
-                    paint);
-        }
-        if (FlappyDroidGame.HIGHEST_SCORE > 0) {
-            textY += step;
-            g.drawString("WWW Score: " + FlappyDroidGame.HIGHEST_SCORE, textX,
-                    textY, paint);
-        }
+        drawScore(g);
     }
 
     private void drawPausedUI() {
@@ -502,11 +507,113 @@ public class GameScreen extends FlappyDroidScreen implements Observer {
     }
 
     private void drawGameOverUI() {
+        int textX = 10, textY = 50, step = 50;
         Graphics g = game.getGraphics();
-        g.fillRect(0, 0, g.getWidth(), g.getHeight(), Color.BLACK);
-        int offsetX = 800 / 2 - Assets.gameOver.getWidth() / 2;
-        int offsetY = 1200 / 2 - Assets.gameOver.getHeight() / 2;
-        g.drawImage(Assets.gameOver, offsetX, offsetY);
+        // Vector<Entity> entities = (Vector<Entity>) this.entities.clone();
+        for (Entity entity : entities) {
+            entity.draw(g);
+        }
+        // // Defining a paint object
+        // Paint paint = new Paint();
+        // paint.setTextSize(40);
+        // paint.setTextAlign(Paint.Align.LEFT);
+        // paint.setAntiAlias(true);
+        // paint.setColor(Color.BLACK);
+
+        this.drawScore(g);
+        this.drawHighScores(g);
+
+        // g.drawString("Score: " + score, textX, textY, paint);
+        // if (FlappyDroidGame.HIGH_SCORE > 0) {
+        // textY += step;
+        // g.drawString("High Score: " + FlappyDroidGame.HIGH_SCORE, textX,
+        // textY,
+        // paint);
+        // }
+        // if (FlappyDroidGame.HIGHEST_SCORE > 0) {
+        // textY += step;
+        // g.drawString("WWW Score: " + FlappyDroidGame.HIGHEST_SCORE, textX,
+        // textY, paint);
+        // }
+    }
+    protected Paint[] paints = null;
+    public void initPaints() {
+        // Defining a paint object
+        Paint paint = new Paint();
+        paint.setTextSize(80);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLACK);
+        paint.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        Paint paint2 = new Paint();
+        paint2.setTextSize(80);
+        paint2.setTextAlign(Paint.Align.CENTER);
+        paint2.setAntiAlias(true);
+        paint2.setColor(Color.WHITE);
+        paint2.setFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+        this.paints = new Paint[]{paint, paint2};
+    }
+    public Paint[] getPaints() {
+        if (this.paints != null) {
+            return this.paints;
+        }
+        initPaints();
+        return this.paints;
+
+    }
+    public void drawHighScores(Graphics g) {
+        int width = g.getWidth();
+        int textX = (int) (width / 2), step = 90;
+        int textY = initialY + step;
+
+        Paint paints[] = getPaints();
+        Paint paint = paints[0];
+        Paint paint2 = paints[1];
+
+        g.drawString("High Score: " + FlappyDroidGame.HIGH_SCORE, textX, textY,
+                paint);
+        g.drawString("High Score: " + FlappyDroidGame.HIGH_SCORE, textX - 2,
+                textY - 2, paint2);
+
+         if (FlappyDroidGame.HIGHEST_SCORE > 0) {
+            textY += step;
+            g.drawString("WWW: " + FlappyDroidGame.HIGHEST_SCORE, textX, textY,
+                    paint);
+            g.drawString("WWW: " + FlappyDroidGame.HIGHEST_SCORE, textX - 2,
+                    textY - 2, paint2);
+         }
+        
+        if(!this.gameOverPause){
+            textY += step*2;
+            g.drawString("< tap >", textX, textY,
+                    paint);
+            g.drawString("< tap >", textX - 2,
+                    textY - 2, paint2);
+            textY += step;
+        }
+        // if (FlappyDroidGame.HIGH_SCORE > 0) {
+        // textY += step;
+        // g.drawString("High Score: " + FlappyDroidGame.HIGH_SCORE, textX,
+        // textY,
+        // paint);
+        // }
+        // if (FlappyDroidGame.HIGHEST_SCORE > 0) {
+        // textY += step;
+        // g.drawString("WWW Score: " + FlappyDroidGame.HIGHEST_SCORE, textX,
+        // textY, paint);
+        // }
+
+    }
+    public void drawScore(Graphics g) {
+        int width = g.getWidth();
+        int textX = (int) (width / 2 - 20), textY = initialY;
+        Paint paints[] = getPaints();
+        Paint paint = paints[0];
+        Paint paint2 = paints[1];
+        g.drawString("" + score, textX, textY, paint);
+        g.drawString("" + score, textX - 2, textY - 2, paint2);
     }
 
     @Override
