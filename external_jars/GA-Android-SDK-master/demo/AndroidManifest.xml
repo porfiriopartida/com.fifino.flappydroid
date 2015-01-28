@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gameanalytics.android.example"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.gameanalytics.android.example.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.gameanalytics.android.example.DesignEventsActivity" />
+        <activity android:name="com.gameanalytics.android.example.UserEventsActivity" />
+        <activity android:name="com.gameanalytics.android.example.BusinessEventsActivity" />
+
+        <!-- FOR AUTOMATIC REFERRAL RECEIVER -->
+        <receiver
+            android:name="com.gameanalytics.android.example.DemoReferralReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+         <!-- FOR GOOGLE PLAY SERVICES AND GAME ANALYTICS -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+    </application>
+
+</manifest>
